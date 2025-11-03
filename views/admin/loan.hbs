@@ -1,0 +1,53 @@
+<h3>{{viewTitle}}</h3>
+
+<form action="/admin/loansub" method="POST" autocomplete="off">
+    <input type="hidden" name="_id" value="{{loan._id}}">
+
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>Bank Name</label>
+            <input type="text" class="form-control" name="bankname" placeholder="Bank Name" value="{{loan.bankname}}">
+            <div class="text-danger">{{loan.banknameError}}</div>
+        </div>
+
+        <div class="form-group col-md-6">
+            <label>Rate</label>
+            <input type="text" class="form-control" name="rate" placeholder="Rate" value="{{loan.rate}}">
+            <div class="text-danger">{{loan.rateError}}</div>
+        </div>
+
+        <div class="form-group col-md-6">
+            <label>Installments</label>
+            <input type="text" class="form-control" name="installments" placeholder="Installments" value="{{loan.installments}}">
+        </div>
+
+        <div class="form-group col-md-6">
+            <label>Fee</label>
+            <input type="text" class="form-control" name="fee" placeholder="Fee" value="{{loan.fee}}">
+        </div>
+
+        <div class="form-group col-md-6">
+            <label>Tenure</label>
+            <input type="text" class="form-control" name="tenure" placeholder="Tenure" value="{{loan.tenure}}">
+            <div class="text-danger">{{loan.tenureError}}</div>
+        </div>
+
+        <div class="form-group col-md-6">
+            <label>Maximum Amount</label>
+            <input type="text" class="form-control" name="maxamt" placeholder="Maximum Amount" value="{{loan.maxamt}}">
+            <div class="text-danger">{{loan.maxamtError}}</div>
+        </div>
+
+        <div class="form-group col-md-6">
+            <label>Email ID</label>
+            <input type="email" class="form-control" name="emailid" placeholder="Email ID" value="{{loan.emailid}}">
+            <div class="text-danger">{{loan.emailidError}}</div>
+        </div>
+    </div>
+
+    <div class="form-group mt-3">
+        <button type="submit" class="btn btn-info">Save</button>
+        <a class="btn btn-secondary ml-2" href="/admin/home">Back to Dashboard</a>
+        <a class="btn btn-outline-primary ml-2" href="/admin/home/loanlist">View Records</a>
+    </div>
+</form>

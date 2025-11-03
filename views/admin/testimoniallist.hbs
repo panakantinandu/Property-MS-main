@@ -1,0 +1,40 @@
+<table>
+  <tr>
+    <td>
+      <h3>Testimonial Records</h3>
+    </td>
+    <td style="margin: 10px; padding-left:600px;"></td>
+    <td>
+      <a class="btn btn-primary" href="/admin/home/addtestimonial">Add Testimonial</a>
+      <a class="btn btn-primary" href="/admin/home">Home</a>
+    </td>
+  </tr>
+</table>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Tenant Name</th>
+      <th>Occupation</th>
+      <th>Property Name</th>
+      <th>Tenant Description</th>
+      <th>Tenant Satisfaction (/10)</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each list}}
+    <tr>
+      <td>{{this.tenantname}}</td>
+      <td>{{this.occupation}}</td>
+      <td>{{this.propertyname}}</td>
+      <td>{{this.tenantdesc}}</td>
+      <td>{{this.tenantsat}}</td>
+      <td>
+        <a class="btn btn-outline-primary btn-sm" href="/admin/home/testimonialupdate/{{this._id}}">Edit</a>
+        <a class="btn btn-outline-danger btn-sm" href="/admin/home/testimonialdelete/{{this._id}}" onclick="return confirm('Are you sure you want to delete this record?');">Delete</a>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>

@@ -1,0 +1,40 @@
+<h3>{{viewTitle}}</h3>
+
+<form action="/admin/testimonialsub" method="POST" autocomplete="off">
+    <input type="hidden" name="_id" value="{{testimonial._id}}">
+
+    <div class="form-group">
+        <label>Tenant Name</label>
+        <input type="text" class="form-control" name="tenantname" placeholder="Tenant Name" value="{{testimonial.tenantname}}">
+        <div class="text-danger">{{testimonial.tenantnameError}}</div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>Occupation</label>
+            <input type="text" class="form-control" name="occupation" placeholder="Occupation" value="{{testimonial.occupation}}">
+        </div>
+
+        <div class="form-group col-md-6">
+            <label>Property Name</label>
+            <input type="text" class="form-control" name="propertyname" placeholder="Property Name" value="{{testimonial.propertyname}}">
+            <div class="text-danger">{{testimonial.propertynameError}}</div>
+        </div>
+
+        <div class="form-group col-md-6">
+            <label>Tenant Description</label>
+            <input type="text" class="form-control" name="tenantdesc" placeholder="Tenant Description" value="{{testimonial.tenantdesc}}">
+        </div>
+
+        <div class="form-group col-md-6">
+            <label>Tenant Satisfaction (/10)</label>
+            <input type="number" min="1" max="10" class="form-control" name="tenantsat" placeholder="1-10" value="{{testimonial.tenantsat}}">
+            <div class="text-danger">{{testimonial.tenantsatError}}</div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-info">Save</button>
+        <a class="btn btn-secondary" href="/admin/home/testimoniallist">View Records</a>
+    </div>
+</form>

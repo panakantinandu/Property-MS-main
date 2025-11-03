@@ -1,0 +1,47 @@
+[
+    {
+        "cancellationid": 7211,
+        "propertyname": "Aparna towers",
+        "customername": "Asley",
+        "cancellationdate": "2016-05-14T01:33:20.201Z",
+        "amtrefund": 60000,
+        "referencenum": "DDTYU2154",
+        "tenantname": "Dummy Tenant"
+    },
+    {
+        "cancellationid": 7212,
+        "propertyname": "Modern appartments",
+        "customername": "Chitresh",
+        "cancellationdate": "2017-05-06T01:25:20.201Z",
+        "amtrefund": 100000,
+        "referencenum": "DSSRA1319",
+        "tenantname": "Dummy Tenant"
+    },
+    {
+        "cancellationid": 7213,
+        "propertyname": "MyHome Villas",
+        "customername": "Arjun",
+        "cancellationdate": "2015-11-10T07:29:20.201Z",
+        "amtrefund": 200000,
+        "referencenum": "DOOPA0984",
+        "tenantname": "Dummy Tenant"
+    },
+    {
+        "cancellationid": 7214,
+        "propertyname": "Lodha towers",
+        "customername": "Manas",
+        "cancellationdate": "2016-05-23T01:42:20.201Z",
+        "amtrefund": 70000,
+        "referencenum": "DTUYA7560",
+        "tenantname": "Dummy Tenant"
+    },
+    {
+        "cancellationid": 7215,
+        "propertyname": "Jains towers",
+        "customername": "Anand",
+        "cancellationdate": "2018-02-09T22:29:20.201Z",
+        "amtrefund": 800000,
+        "referencenum": "DPYUA3568",
+        "tenantname": "Dummy Tenant"
+    }
+]

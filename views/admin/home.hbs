@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>LeaseHub</title>
+  <link rel="icon" href="/images/home-sign.png" type="image/png">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+  <style>
+    .container {
+      padding-left: 50px;
+    }
+    .jumbotron img {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <div class="navbar-brand">LeaseHub</div>
+      </div>
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="/admin/home">Home</a></li>
+        <li><a href="/admin/home/about">About</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="/admin/login">Log Out</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="jumbotron text-center">
+    <img src="/properties.png" alt="properties" width="1000" height="250">
+    <h1>Property Management System</h1>
+  </div>
+
+  <div class="container">
+    <a class="btn btn-primary btn-lg" href="/admin/home/tenantlist">Manage Tenants</a>
+    <a class="btn btn-primary btn-lg" href="/admin/home/propertylist">Manage Properties</a>
+    <a class="btn btn-primary btn-lg" href="/admin/home/loanlist">Manage Loans</a>
+    <a class="btn btn-primary btn-lg" href="/admin/home/registrationlist">Registrations</a>
+    <a class="btn btn-primary btn-lg" href="/admin/home/testimoniallist">Testimonials</a>
+    <a class="btn btn-primary btn-lg" href="/admin/home/transactionlist">Transactions</a>
+    <a class="btn btn-primary btn-lg" href="/admin/home/cancellationlist">Cancellations</a>
+  </div>
+</body>
+</html>

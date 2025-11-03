@@ -1,0 +1,46 @@
+<table>
+    <tr>
+        <td>
+            <h3>Tenants Records</h3>
+        </td>
+        <td style="padding-left:650px;"></td>
+        <td>
+            <a class="btn btn-primary" href="/admin/home/addtenant">Add Tenant</a>
+            <a class="btn btn-primary" href="/admin/home">Home</a>
+        </td>
+    </tr>
+</table>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Birthday</th>
+            <th>Phone</th>
+            <th>Occupation</th>
+            <th>Income</th>
+            <th>Address</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each list}}
+        <tr>
+            <td>{{this.firstname}}</td>
+            <td>{{this.lastname}}</td>
+            <td>{{this.email}}</td>
+            <td>{{this.dob}}</td>
+            <td>{{this.phonenumber}}</td>
+            <td>{{this.occupation}}</td>
+            <td>{{this.annualincome}}</td>
+            <td>{{this.address}}</td>
+            <td>
+                <a class="btn btn-outline-primary btn-sm" href="/admin/home/tenantupdate/{{this._id}}">Edit</a>
+                <a class="btn btn-outline-danger btn-sm" href="/admin/home/tenantdelete/{{this._id}}" onclick="return confirm('Are you sure to delete this record?');">Delete</a>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>

@@ -1,0 +1,46 @@
+<h3>Registration Records</h3>
+
+<table>
+    <tr>
+        <td>
+            <a class="btn btn-primary" href="/admin/home/addregistration">Add Registration</a>
+            <a class="btn btn-secondary" href="/admin/home">Home</a>
+        </td>
+    </tr>
+</table>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Property Name</th>
+            <th>Address</th>
+            <th>Mobile</th>
+            <th>Alternate Mobile</th>
+            <th>Email</th>
+            <th>Annual Income</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Registered Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each list}}
+        <tr>
+            <td>{{this.propertyName}}</td>
+            <td>{{this.address}}</td>
+            <td>{{this.mobile}}</td>
+            <td>{{this.alternateMobile}}</td>
+            <td>{{this.email}}</td>
+            <td>{{this.annualIncome}}</td>
+            <td>{{this.description}}</td>
+            <td>{{this.registrationStatus}}</td>
+            <td>{{this.registrationDate}}</td>
+            <td>
+                <a class="btn btn-outline-primary btn-sm" href="/admin/home/registrationupdate/{{this._id}}">Edit</a>
+                <a class="btn btn-outline-danger btn-sm" href="/admin/home/registrationdelete/{{this._id}}" onclick="return confirm('Are you sure to delete this record?');">Delete</a>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>

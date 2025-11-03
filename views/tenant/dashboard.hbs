@@ -1,0 +1,48 @@
+{{!-- views/tenant/dashboard.hbs --}}
+{{!-- layout: uses layout.hbs unless overridden --}}
+
+<div class="container mt-5">
+  <h1 class="text-center">Welcome, {{tenant.name}}!</h1>
+  <p class="text-center text-muted">This is your dashboard for managing your registered properties.</p>
+
+  <div class="text-end mb-4">
+    <a href="/tenant/logout" class="btn btn-outline-danger">Logout</a>
+  </div>
+
+  <div class="mb-4">
+    <h3>Your Registered Properties</h3>
+
+    {{#if properties.length}}
+      <table class="table table-hover table-bordered">
+        <thead class="table-dark">
+          <tr>
+            <th>Property ID</th>
+            <th>Property Name</th>
+            <th>Address</th>
+            <th>Annual Income</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each properties}}
+            <tr>
+              <td>{{this.propertyId}}</td>
+              <td>{{this.propertyName}}</td>
+              <td>{{this.address}}</td>
+              <td>{{this.annualIncome}}</td>
+              <td>{{this.registrationStatus}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    {{else}}
+      <div class="alert alert-info">
+        You haven't registered any properties yet. Use the button below to get started.
+      </div>
+    {{/if}}
+  </div>
+
+  <div class="text-center">
+    <a href="/tenant/property-registration" class="btn btn-success btn-lg">Register New Property</a>
+  </div>
+</div>

@@ -1,0 +1,103 @@
+[
+	{
+	  "loanid": 6001,
+	  "bankname": "Bank of America",
+	  "rate": "6.5",
+	  "installments": 12,
+	  "fee": 1500,
+	  "tenure": 24,
+	  "maxamt": 250000,
+	  "emailid": "info@bofa.com"
+	},
+	{
+	  "loanid": 6002,
+	  "bankname": "Wells Fargo",
+	  "rate": "7.2",
+	  "installments": 10,
+	  "fee": 1800,
+	  "tenure": 36,
+	  "maxamt": 300000,
+	  "emailid": "support@wellsfargo.com"
+	},
+	{
+	  "loanid": 6003,
+	  "bankname": "Chase Bank",
+	  "rate": "6.8",
+	  "installments": 8,
+	  "fee": 1000,
+	  "tenure": 18,
+	  "maxamt": 200000,
+	  "emailid": "contact@chase.com"
+	},
+	{
+	  "loanid": 6004,
+	  "bankname": "Citibank",
+	  "rate": "7.0",
+	  "installments": 9,
+	  "fee": 1300,
+	  "tenure": 30,
+	  "maxamt": 220000,
+	  "emailid": "info@citibank.com"
+	},
+	{
+	  "loanid": 6005,
+	  "bankname": "U.S. Bank",
+	  "rate": "6.3",
+	  "installments": 7,
+	  "fee": 1100,
+	  "tenure": 24,
+	  "maxamt": 180000,
+	  "emailid": "loans@usbank.com"
+	},
+	{
+	  "loanid": 6006,
+	  "bankname": "PNC Bank",
+	  "rate": "7.5",
+	  "installments": 6,
+	  "fee": 950,
+	  "tenure": 12,
+	  "maxamt": 150000,
+	  "emailid": "contact@pncbank.com"
+	},
+	{
+	  "loanid": 6007,
+	  "bankname": "TD Bank",
+	  "rate": "6.7",
+	  "installments": 10,
+	  "fee": 1200,
+	  "tenure": 18,
+	  "maxamt": 170000,
+	  "emailid": "info@tdbank.com"
+	},
+	{
+	  "loanid": 6008,
+	  "bankname": "Capital One",
+	  "rate": "6.9",
+	  "installments": 9,
+	  "fee": 1400,
+	  "tenure": 24,
+	  "maxamt": 190000,
+	  "emailid": "loans@capitalone.com"
+	},
+	{
+	  "loanid": 6009,
+	  "bankname": "Ally Bank",
+	  "rate": "6.4",
+	  "installments": 5,
+	  "fee": 1000,
+	  "tenure": 12,
+	  "maxamt": 130000,
+	  "emailid": "support@ally.com"
+	},
+	{
+	  "loanid": 6010,
+	  "bankname": "Discover Bank",
+	  "rate": "7.1",
+	  "installments": 8,
+	  "fee": 1600,
+	  "tenure": 20,
+	  "maxamt": 210000,
+	  "emailid": "contact@discover.com"
+	}
+  ]
+  

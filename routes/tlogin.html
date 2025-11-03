@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Form</title>
+  <link rel="stylesheet" href="/css/login.css"> 
+</head>
+
+<body>
+  <div class="body"></div>
+  <div class="grad"></div>
+  <div class="header">
+    <div><span>Property Management<br>Tenant Login</span></div>
+  </div>
+  <br>
+  <div class="login">
+    <form action="/tenant/login" method="POST">
+      <input type="text" placeholder="Tenant ID" name="tenantid" autocomplete="off" required><br>
+      <input type="password" placeholder="Password" name="password" required><br>
+      <input type="submit" name="login" value="Login">
+      <br>
+    </form>
+    <form action="/tenant/register" method="POST">
+      <input type="submit" value="New Register">
+    </form>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('error')) {
+      alert('Logged-In successfully');
+    }
+  </script>
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Form</title>
+  <link rel="stylesheet" href="/css/login.css"> 
+</head>
+
+<body>
+  <div class="body"></div>
+  <div class="grad"></div>
+  <div class="header">
+    <div><span>Property Management<br>Tenant Login</span></div>
+  </div>
+  <br>
+  <div class="login">
+    <form action="/tenant/login" method="POST">
+      <input type="text" placeholder="Tenant ID" name="tenantid" autocomplete="off" required><br>
+      <input type="password" placeholder="Password" name="password" required><br>
+      <input type="submit" name="login" value="Login">
+      <br>
+    </form>
+    <form action="/tenant/register" method="POST">
+      <input type="submit" value="New Register">
+    </form>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('error')) {
+      alert('Invalid credentials. Please try again.');
+    }
+  </script>
+</body>
+
+</html>  -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

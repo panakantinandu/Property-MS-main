@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tenant Login - Property Management</title>
+  <link rel="stylesheet" href="/css/login.css"> 
+</head>
+
+<body>
+  <div class="body"></div>
+  <div class="grad"></div>
+
+  <div class="header">
+    <div><span>Property Management<br>Tenant Login</span></div>
+  </div>
+
+  <br>
+
+  <div class="login">
+    {{#if error}}
+      <div style="color: red; text-align: center; margin-bottom: 10px;">
+        {{error}}
+      </div>
+    {{/if}}
+
+    <form action="/tenant/login" method="POST">
+      <input type="text" placeholder="Tenant ID" name="tenantid" autocomplete="off" required><br>
+      <input type="password" placeholder="Password" name="password" required><br>
+      <input type="submit" name="login" value="Login">
+      <br>
+    </form>
+
+    <form action="/tenant/register" method="GET">
+      <input type="submit" value="New Register">
+    </form>
+  </div>
+</body>
+
+</html>

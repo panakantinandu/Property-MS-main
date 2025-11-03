@@ -1,0 +1,42 @@
+<table>
+    <tr>
+        <td>
+            <h3>Transaction Records</h3>
+        </td>
+        <td style="margin: 10px; padding-left:600px;"></td>
+        <td>
+            <a class="btn btn-primary" href="/admin/home/addtransaction">Add Transaction</a>
+            <a class="btn btn-primary" href="/admin/home">Home</a>
+        </td>
+    </tr>
+</table>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Transaction Date</th>
+            <th>Transaction Mode</th>
+            <th>Bank Name</th>
+            <th>Amount</th>
+            <th>Transaction Status</th>
+            <th>Reference Id</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each list}}
+        <tr>
+            <td>{{this.transactiondate}}</td>
+            <td>{{this.transactionmode}}</td>
+            <td>{{this.bankname}}</td>
+            <td>{{this.amtpaid}}</td>
+            <td>{{this.transactionstatus}}</td>
+            <td>{{this.referencenum}}</td>
+            <td>
+                <a class="btn btn-outline-primary btn-sm" href="/admin/home/transactionupdate/{{this._id}}">Edit</a>
+                {{!-- <a class="btn btn-outline-danger btn-sm" href="/admin/home/transactiondelete/{{this._id}}" onclick="return confirm('Are you sure to delete this record ?');">Delete</a> --}}
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>

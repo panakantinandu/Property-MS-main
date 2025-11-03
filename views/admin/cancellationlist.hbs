@@ -1,0 +1,34 @@
+<h3>Cancellation Records</h3>
+
+<div class="mb-3">
+    <a class="btn btn-primary" href="/admin/home/addcancellation">Add Cancellation</a>
+    <a class="btn btn-secondary" href="/admin/home">Home</a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Property Name</th>
+            <th>Tenant Name</th>
+            <th>Cancellation Date</th>
+            <th>Refund</th>
+            <th>Reference Id</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each list}}
+        <tr>
+            <td>{{this.propertyname}}</td>
+            <td>{{this.tenantname}}</td>
+            <td>{{this.cancellationdate}}</td>
+            <td>{{this.amtrefund}}</td>
+            <td>{{this.referencenum}}</td>
+            <td>
+                <a class="btn btn-outline-primary btn-sm" href="/admin/home/cancellationupdate/{{this._id}}">Edit</a>
+                <a class="btn btn-outline-danger btn-sm" href="/admin/home/cancellationdelete/{{this._id}}" onclick="return confirm('Are you sure to delete this record?');">Delete</a>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>

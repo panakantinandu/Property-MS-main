@@ -1,0 +1,42 @@
+<h3>Loan Provider Records</h3>
+
+<table>
+    <tr>
+        <td>
+            <a class="btn btn-primary" href="/home/addloan">Add Loan Provider</a>
+            <a class="btn btn-secondary" href="/admin/home">Back to Home</a>
+        </td>
+    </tr>
+</table>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Bank Name</th>
+            <th>Rate</th>
+            <th>Installments</th>
+            <th>Fee</th>
+            <th>Tenure</th>
+            <th>Max Amount</th>
+            <th>Email ID</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each list}}
+        <tr>
+            <td>{{this.bankname}}</td>
+            <td>{{this.rate}}</td>
+            <td>{{this.installments}}</td>
+            <td>{{this.fee}}</td>
+            <td>{{this.tenure}}</td>
+            <td>{{this.maxamt}}</td>
+            <td>{{this.emailid}}</td>
+            <td>
+                <a class="btn btn-outline-primary btn-sm" href="/admin/home/loanupdate/{{this._id}}">Edit</a>
+                <a class="btn btn-outline-danger btn-sm" href="/admin/home/loandelete/{{this._id}}" onclick="return confirm('Are you sure you want to delete this record?');">Delete</a>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>

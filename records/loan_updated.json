@@ -1,0 +1,202 @@
+[
+    {
+        "loanid": 5211,
+        "bankname": "Bank of America",
+        "rate": "8",
+        "installments": 10,
+        "fee": 10000,
+        "tenure": 12,
+        "maxamt": 800000,
+        "emailid": "info@bankofamerica.com"
+    },
+    {
+        "loanid": 5212,
+        "bankname": "Chase",
+        "rate": 7,
+        "installments": 13,
+        "fee": 14000,
+        "tenure": 18,
+        "maxamt": 500000,
+        "emailid": "info@chase.com"
+    },
+    {
+        "loanid": 5213,
+        "bankname": "Wells Fargo",
+        "rate": 9,
+        "installments": 8,
+        "fee": 12000,
+        "tenure": 18,
+        "maxamt": 800000,
+        "emailid": "info@wellsfargo.com"
+    },
+    {
+        "loanid": 5214,
+        "bankname": "Citibank",
+        "rate": "6",
+        "installments": 9,
+        "fee": 8000,
+        "tenure": 12,
+        "maxamt": 500000,
+        "emailid": "info@citibank.com"
+    },
+    {
+        "loanid": 5215,
+        "bankname": "U.S. Bank",
+        "rate": "8",
+        "installments": 7,
+        "fee": 9000,
+        "tenure": 36,
+        "maxamt": 900000,
+        "emailid": "info@u.s.bank.com"
+    },
+    {
+        "loanid": 5216,
+        "bankname": "PNC Bank",
+        "rate": "7",
+        "installments": 11,
+        "fee": 6000,
+        "tenure": 18,
+        "maxamt": 800000,
+        "emailid": "info@pncbank.com"
+    },
+    {
+        "loanid": 5217,
+        "bankname": "Capital One",
+        "rate": "9",
+        "installments": 8,
+        "fee": 19000,
+        "tenure": 24,
+        "maxamt": 500000,
+        "emailid": "info@capitalone.com"
+    },
+    {
+        "loanid": 5218,
+        "bankname": "TD Bank",
+        "rate": "6",
+        "installments": 6,
+        "fee": 12000,
+        "tenure": 24,
+        "maxamt": 800000,
+        "emailid": "info@tdbank.com"
+    },
+    {
+        "loanid": 5219,
+        "bankname": "Goldman Sachs",
+        "rate": "8",
+        "installments": 9,
+        "fee": 13000,
+        "tenure": 24,
+        "maxamt": 600000,
+        "emailid": "info@goldmansachs.com"
+    },
+    {
+        "loanid": 5220,
+        "bankname": "Morgan Stanley",
+        "rate": "7",
+        "installments": 5,
+        "fee": 10000,
+        "tenure": 18,
+        "maxamt": 900000,
+        "emailid": "info@morganstanley.com"
+    },
+    {
+        "loanid": 5221,
+        "bankname": "Ally Bank",
+        "rate": "9",
+        "installments": 7,
+        "fee": 12000,
+        "tenure": 12,
+        "maxamt": 500000,
+        "emailid": "info@allybank.com"
+    },
+    {
+        "loanid": 5222,
+        "bankname": "American Express",
+        "rate": "6",
+        "installments": 6,
+        "fee": 12000,
+        "tenure": 12,
+        "maxamt": 800000,
+        "emailid": "info@americanexpress.com"
+    },
+    {
+        "loanid": 5223,
+        "bankname": "Discover",
+        "rate": "8",
+        "installments": 8,
+        "fee": 15000,
+        "tenure": 12,
+        "maxamt": 500000,
+        "emailid": "info@discover.com"
+    },
+    {
+        "loanid": 5224,
+        "bankname": "Regions Bank",
+        "rate": "7",
+        "installments": 7,
+        "fee": 9000,
+        "tenure": 24,
+        "maxamt": 800000,
+        "emailid": "info@regionsbank.com"
+    },
+    {
+        "loanid": 5225,
+        "bankname": "Fifth Third Bank",
+        "rate": "9",
+        "installments": 9,
+        "fee": 6000,
+        "tenure": 36,
+        "maxamt": 700000,
+        "emailid": "info@fifththirdbank.com"
+    },
+    {
+        "loanid": 5226,
+        "bankname": "PNB",
+        "rate": "6",
+        "installments": 8,
+        "fee": 10000,
+        "tenure": 24,
+        "maxamt": 800000,
+        "emailid": "info@pnbloans.com"
+    },
+    {
+        "loanid": 5227,
+        "bankname": "Standard Chartered",
+        "rate": "8",
+        "installments": 9,
+        "fee": 10000,
+        "tenure": 12,
+        "maxamt": 500000,
+        "emailid": "info@scloans.com"
+    },
+    {
+        "loanid": 5228,
+        "bankname": "Syndicate",
+        "rate": "7",
+        "installments": 8,
+        "fee": 1000,
+        "tenure": 12,
+        "maxamt": 800000,
+        "emailid": "info@syndicateloans.com"
+    },
+    {
+        "loanid": 5229,
+        "bankname": "Union Bank",
+        "rate": "9",
+        "installments": 12,
+        "fee": 10000,
+        "tenure": 20,
+        "maxamt": 800000,
+        "emailid": "info@unionloans.com"
+    },
+    {
+        "loanid": 5230,
+        "bankname": "YES",
+        "rate": "6",
+        "installments": 10,
+        "fee": 13000,
+        "tenure": 18,
+        "maxamt": 400000,
+        "emailid": "info@yesloans.com"
+    }
+]

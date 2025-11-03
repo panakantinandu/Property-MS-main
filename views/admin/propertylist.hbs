@@ -1,0 +1,38 @@
+<h3>Property Records</h3>
+
+<div class="mb-3">
+    <a class="btn btn-primary" href="/admin/home/addproperty">Add Property</a>
+    <a class="btn btn-secondary" href="/admin/home">Home</a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Property Name</th>
+            <th>Type</th>
+            <th>BHK</th>
+            <th>Area</th>
+            <th>Price</th>
+            <th>Location</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each list}}
+        <tr>
+            <td>{{this.propertyname}}</td>
+            <td>{{this.propertytype}}</td>
+            <td>{{this.propertybhk}}</td>
+            <td>{{this.area}}</td>
+            <td>{{this.price}}</td>
+            <td>{{this.location}}</td>
+            <td>{{this.propertystatus}}</td>
+            <td>
+                <a class="btn btn-outline-primary btn-sm" href="/admin/home/propertyupdate/{{this._id}}">Edit</a>
+                <a class="btn btn-outline-danger btn-sm" href="/admin/home/propertydelete/{{this._id}}" onclick="return confirm('Are you sure you want to delete this property?');">Delete</a>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
