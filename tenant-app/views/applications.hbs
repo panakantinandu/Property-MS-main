@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Applications - LeaseHub</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background: #f5f7fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .navbar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 1rem 2rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+        .navbar-brand { color: white !important; font-weight: 700; font-size: 1.5rem; }
+        .nav-link { color: rgba(255, 255, 255, 0.9) !important; margin: 0 10px; }
+        .main-content { padding: 30px; max-width: 1200px; margin: 0 auto; }
+        .page-header { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08); margin-bottom: 30px; }
+        .application-card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08); margin-bottom: 20px; }
+        .badge-pending { background: #ffc107; color: #000; padding: 8px 15px; border-radius: 20px; }
+        .badge-approved { background: #4caf50; color: white; padding: 8px 15px; border-radius: 20px; }
+        .badge-rejected { background: #f44336; color: white; padding: 8px 15px; border-radius: 20px; }
+        .badge-cancelled { background: #9e9e9e; color: white; padding: 8px 15px; border-radius: 20px; }
+        .property-info { border-left: 4px solid #667eea; padding-left: 20px; margin-bottom: 20px; }
+        .empty-state { text-align: center; padding: 60px 20px; }
+        .empty-state i { font-size: 80px; color: #ddd; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <a class="navbar-brand" href="/tenant/dashboard">🏠 LeaseHub</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="/tenant/dashboard">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="/tenant/properties">Available Properties</a></li>
+                <li class="nav-item"><a class="nav-link active" href="/tenant/applications">My Applications</a></li>
+                <li class="nav-item"><a class="nav-link" href="/tenant/payments">Payments</a></li>
+                <li class="nav-item"><a class="nav-link" href="/tenant/logout">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <div class="page-header">
+            <h2><i class="fas fa-file-alt"></i> My Applications</h2>
+            <p>Track the status of your property applications</p>
+            {{#if hasApprovedApplication}}
+            <div class="alert alert-success mt-3">
+                <i class="fas fa-check-circle"></i> <strong>Congratulations!</strong> You have an approved application. You cannot apply to other properties.
+            </div>
+            {{else}}
+            <div class="alert alert-info mt-3">
+                <i class="fas fa-info-circle"></i> <strong>Application Limit:</strong> You have <strong>{{pendingCount}}/{{maxPendingAllowed}}</strong> pending applications. 
+                {{#if (eq pendingCount maxPendingAllowed)}}
+                You've reached the maximum limit. Wait for a response or withdraw an application to apply to another property.
+                {{else}}
+                You can apply to {{subtract maxPendingAllowed pendingCount}} more propert{{#if (eq (subtract maxPendingAllowed pendingCount) 1)}}y{{else}}ies{{/if}}.
+                {{/if}}
+            </div>
+            {{/if}}
+        </div>
+
+        {{#if success}}
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="fas fa-check-circle"></i> {{success}}
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+        </div>
+        {{/if}}
+
+        {{#if error}}
+        <div class="alert alert-danger alert-dismissible fade show">
+            <i class="fas fa-exclamation-circle"></i> {{error}}
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+        </div>
+        {{/if}}
+
+        {{#if successMessage}}
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="fas fa-check-circle"></i> {{successMessage}}
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+        </div>
+        {{/if}}
+
+        {{#if applications.length}}
+        {{#each applications}}
+        <div class="application-card">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <h4>Application for {{this.propertyId.propertyname}}</h4>
+                {{#if (eq this.status 'pending')}}
+                    <span class="badge-pending"><i class="fas fa-clock"></i> Pending Review</span>
+                {{else if (eq this.status 'approved')}}
+                    <span class="badge-approved"><i class="fas fa-check-circle"></i> Approved</span>
+                {{else if (eq this.status 'rejected')}}
+                    <span class="badge-rejected"><i class="fas fa-times-circle"></i> Rejected</span>
+                {{else if (eq this.status 'cancelled')}}
+                    <span class="badge-cancelled"><i class="fas fa-ban"></i> Cancelled</span>
+                {{/if}}
+            </div>
+
+            <div class="property-info">
+                <h5>{{this.propertyId.propertyname}}</h5>
+                <p class="text-muted mb-2">
+                    <i class="fas fa-map-marker-alt"></i> {{this.propertyId.propertyaddress}}, {{this.propertyId.city}}
+                </p>
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Rent:</strong> {{currencySymbol}}{{this.propertyId.rent}}/month
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Deposit:</strong> {{currencySymbol}}{{this.propertyId.deposit}}
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Type:</strong> {{this.propertyId.bedrooms}} BHK {{this.propertyId.propertytype}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Applied On:</strong> {{formatDate this.createdAt}}</p>
+                    <p><strong>Preferred Move-in:</strong> {{formatDate this.preferredMoveIn}}</p>
+                    <p><strong>Lease Duration:</strong> {{this.leaseDuration}} months</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Occupation:</strong> {{this.occupation}}</p>
+                    <p><strong>Monthly Income:</strong> {{currencySymbol}}{{this.monthlyIncome}}</p>
+                    <p><strong>Occupants:</strong> {{this.occupants}}</p>
+                </div>
+            </div>
+
+            {{#if (eq this.status 'pending')}}
+            <div class="alert alert-warning mt-3">
+                <i class="fas fa-hourglass-half"></i> <strong>Under Review</strong><br>
+                Your application is being reviewed by the admin. You will be notified once a decision is made.
+            </div>
+            <form action="/tenant/applications/{{this._id}}/cancel" method="POST" class="mt-2">
+                <input type="hidden" name="_csrf" value="{{../csrfToken}}">
+                <button type="submit" class="btn btn-outline-danger btn-sm">
+                    <i class="fas fa-ban"></i> Cancel Application
+                </button>
+            </form>
+            {{/if}}
+
+            {{#if (eq this.status 'approved')}}
+            <div class="alert alert-success mt-3">
+                <i class="fas fa-check-circle"></i> <strong>Congratulations!</strong> Your application has been approved.<br>
+                {{#if this.adminComments}}
+                <small>{{this.adminComments}}</small><br>
+                {{/if}}
+                <div class="mt-3">
+                    <a href="/tenant/dashboard" class="btn btn-success">
+                        <i class="fas fa-home"></i> Go to Dashboard
+                    </a>
+                    <a href="/tenant/payments" class="btn btn-primary">
+                        <i class="fas fa-credit-card"></i> Proceed to Payment
+                    </a>
+                    <form action="/tenant/applications/{{this._id}}/cancel" method="POST" style="display:inline-block; margin-left:10px;">
+                        <input type="hidden" name="_csrf" value="{{../csrfToken}}">
+                        <button type="submit" class="btn btn-outline-danger">
+                            <i class="fas fa-ban"></i> Cancel Application
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {{/if}}
+
+            {{#if (eq this.status 'expired')}}
+            <div class="alert alert-danger mt-3">
+                <i class="fas fa-exclamation-triangle"></i> <strong>Application Expired</strong><br>
+                Your lease application has expired due to non-payment. The property has been released and is now available to other applicants.
+                <div class="mt-2">
+                    <a href="/tenant/properties" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-search"></i> Browse Available Properties
+                    </a>
+                </div>
+            </div>
+            {{/if}}
+
+            {{#if (eq this.status 'rejected')}}
+            <div class="alert alert-danger mt-3">
+                <i class="fas fa-times-circle"></i> <strong>Application Declined</strong><br>
+                {{#if this.adminComments}}
+                Reason: {{this.adminComments}}<br>
+                {{/if}}
+                <small>You may apply to another property.</small>
+                <div class="mt-2">
+                    <a href="/tenant/properties" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Browse Properties
+                    </a>
+                </div>
+            </div>
+            {{/if}}
+        </div>
+        {{/each}}
+        {{else}}
+        <div class="empty-state">
+            <i class="fas fa-file-alt"></i>
+            <h4>No Applications Yet</h4>
+            <p class="text-muted">You haven't applied for any properties yet.</p>
+            <a href="/tenant/properties" class="btn btn-primary btn-lg mt-3">
+                <i class="fas fa-search"></i> Browse Properties
+            </a>
+        </div>
+        {{/if}}
+    </div>
+</body>
+</html>

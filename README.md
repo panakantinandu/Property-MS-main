@@ -1,24 +1,303 @@
-# Real-Estate-Management-System-using-NodeJS-Express-MongoDB
+# LeaseHub – Smart Property & Tenant Management Platform
 
-[![Not Maintained](https://img.shields.io/badge/Maintenance%20Level-Not%20Maintained-yellow.svg)](https://gist.github.com/cheerfulstoic/d107229326a01ff0f333a1d3476e068d)
+## 1. Project Title
 
+**LeaseHub – Smart Property & Tenant Management Platform**
 
-### The real estate management system is a web application designed for any real estate agency, which has an intuitive and effortless to use to interface for both its agency owner and its customers. Here owners can log in with their given ID and password in order to manage the website. The owner can post the property that needs to be sold by the agency in the property listings. The customers of the agency can register and log into the website. Here the customers can browse through various properties listed on the website which enable the customer to find the property as per his/her requirements
+A full-stack, production-oriented property management system providing separate tenant and admin experiences, built with Node.js, Express, MongoDB, and Stripe.
 
-## ABSTRACT
-Nowadays everything is automated using computer systems, so many companies are developing web applications to provide online services to their customers. Real Estate Management System is an online web application developed for real estate builders and their customers to handle real estate consultations between the buyer and seller. This is a simple yet efficient management system to manage records of properties instead of using traditional methods to manage data like manual records or file systems. This system provides an added benefit to its customers since they no longer need to depend upon an intermediary agent who can help to find the required property. Also, their customers can always be in the comfort of their homes to check the various properties listed in the website as to their choice. Hence reducing the cost, saving time and increasing the comfort of their customers.In the case of a traditional method where the sales and purchase records are stored manually through registers or file systems which is very time consuming and inefficient. Moreover, in this kind of management, there is lots of paperwork involved for the generation of bills, reports, invoices for every transaction which needs to be sorted and maintained manually which are prone to human errors and may lead to problems like misplacing. The management of these manual records is very hard, productivity is lost using manual records, searching of manual records is tedious, the security of records is unreliable.This real estate management system is a digitalized web-based application where the entire records are maintained by the database management system itself. It provides an intuitive user interface, which is easy to use, for both the real estate builders and their customers. It will reduce manual work and helps the builder to save the records related to the details of customers, properties, transactions efficiently. Any calculations involved in the transactions will be automated increasing the work pace of the system and also reduces the possibilities of incidents of human mistakes.
+---
 
-## INTRODUCTION
+## 2. Problem Statement
 
-The real estate management system is a web application designed for any real estate agency, which has an intuitive and effortless to use to interface for both its agency owner and its customers. Here owners can log in with their given ID and password in order to manage the website. The owner can post the property that needs to be sold by the agency in the property listings. The customers of the agency can register and log into the website. Here the customers can browse through various properties listed on the website which enable the customer to find the property as per his/her requirements.Customers can search properties in the property listings and can then view the complete specification of each property listing with its features, location, price, etc. according to their requirements and can buy the property by initiating a registration with the property. Then the customer needs to pay the agency the price of the property that the customer wants to purchase. After successful completion of the transaction process, the property gets registered under the customer's name and the money gets wired to the agency owner. If the customer in case wants to cancel a purchase, they have made with the agency they can carry out a cancellation where the amount of the purchase will be refunded back to the customer and the property gets relisted in the owner's property listings. This method greatly enhances the speed of any process and reduces the overhead of documentation. The agency owner also provides details concerning the home loans provided by various banks which can be inquired by the customer by accessing the respective website of the bank provided by the owner. Being a web application, the agency can showcase the testimonials of its customers who have purchased a property from the agency using this real management application.
+Traditional lease and property management is fragmented and manual:
+- Spreadsheets, paper contracts, and email threads lead to inconsistent data and human error.
+- Tenant onboarding is slow, with no clear application status or centralized document flow.
+- Rent tracking is manual, making it hard to see who is paid, overdue, or at risk.
+- Payment reminders depend on people remembering to send emails or messages.
+- There is little or no audit trail for critical actions such as approvals, cancellations, or refunds.
 
-![Webpage Scrsht](https://github.com/Defcon27/Real-Estate-Management-System-using-NodeJS-Express-MongoDB/blob/master/scrshts/home.jpg)
+Existing rental apps often fall short because they:
+- Rely on **manual tracking** of applications, deposits, and rents.
+- Lack **automation** for recurring invoices, late fees, and notifications.
+- Provide poor **tenant–admin transparency** on application status, invoices, and payments.
+- Struggle with **payment delays** and limited payment options.
+- Do not offer a reliable **audit trail** for compliance, support, and analytics.
 
-### ER DIAGRAM FOR DATABASE
-![er diagram](https://github.com/Defcon27/Real-Estate-Management-System-using-NodeJS-Express-MongoDB/blob/master/scrshts/er.jpg)
+LeaseHub is designed to address these gaps as a realistic SaaS-style backend and UI.
 
-### NOTE:
-- Install all the dependencies with the `Node Package Manager(npm)` listed in the `dependencies.json` file
-- Run `app.js` to initiate the website
-- Port of running server is `3000`
-- `MongoDB` connect automatically to `27017`
+---
+
+## 3. Solution Overview
+
+LeaseHub provides an end-to-end workflow for managing properties, tenants, leases, and payments.
+
+Key solution pillars:
+
+- **Property discovery** – Tenants can browse available properties, view details, and understand availability before applying.
+- **Lease application workflow** – Structured application process with status tracking (pending, approved, expired/cancelled).
+- **Booking deposit system** – Securely capture booking deposits to reserve properties before full onboarding.
+- **Automated monthly rent** – Monthly invoices are generated automatically via background jobs, reducing manual work.
+- **Late fee handling** – Overdue invoices automatically accrue late fees based on business rules, with clear reporting.
+- **Tenant notifications** – Email and in-app notifications keep tenants informed about invoices, payments, and maintenance.
+- **Admin reporting** – Executive dashboards and reports help admins monitor occupancy, revenue, and risk in real time.
+
+The result is a more reliable, auditable, and scalable rental management workflow suitable for real-world operations.
+
+---
+
+## 4. Key Features
+
+### Tenant Features
+
+- **Browse available properties** – View property catalog with availability and key details.
+- **Apply for lease** – Submit structured applications through the tenant portal.
+- **Pay booking deposit** – Reserve properties by paying booking deposits online.
+- **Pay monthly rent via Stripe** – Securely pay recurring rent invoices using Stripe.
+- **View invoices & payment history** – Transparent list of all invoices, payments, and outstanding balances.
+- **Maintenance requests** – Submit and track maintenance tickets from the tenant portal.
+- **Automated reminders** – Receive reminders for upcoming due dates, overdue rent, and important updates.
+
+### Admin Features
+
+- **Property management** – Create, update, and manage properties, units, and availability.
+- **Application approvals** – Review and approve or reject tenant applications with proper status tracking.
+- **Tenant assignment** – Link approved tenants to properties and activate leases.
+- **Automated invoicing** – Generate monthly rent invoices and late fee entries via scheduled jobs.
+- **Rent tracking** – Monitor who is current, overdue, and at risk, with an overdue rent view.
+- **Late fee enforcement** – Apply and track late fees consistently across the portfolio.
+- **Business reports dashboard** – Admin reports for occupancy, revenue, outstanding rent, deposits, and late fees.
+- **Audit logs** – Capture critical admin actions for traceability and compliance.
+
+---
+
+## 5. Security Measures
+
+LeaseHub is built with security best practices appropriate for a multi-tenant SaaS-style application.
+
+- **Role-based access control**
+  - Clear separation between **Admin** and **Tenant** roles.
+  - Admin-only access to management and reporting endpoints.
+
+- **JWT authentication**
+  - JSON Web Tokens used to protect API routes and sessions.
+  - Tokens signed with a strong secret and validated on each request.
+
+- **Password hashing**
+  - User passwords are never stored in plain text.
+  - Strong hashing (e.g., bcrypt) is used before persistence.
+
+- **Environment variable protection**
+  - Secrets such as database URLs, JWT secrets, and Stripe keys are never hard-coded.
+  - All sensitive configuration is loaded from environment variables.
+
+- **Stripe secure payment flow**
+  - Payments are processed via Stripe using server-side APIs and webhooks.
+  - Card data never touches the LeaseHub servers; Stripe handles PCI-compliant processing.
+
+- **No sensitive data stored in frontend**
+  - Frontend templates receive only the data they need; secrets are not exposed.
+  - JWTs and session identifiers are handled securely.
+
+- **Audit logs for critical actions**
+  - Critical events (e.g., approvals, cancellations, payment events) are logged for troubleshooting and compliance.
+
+- **Protection against common risks**
+  - **Unauthorized access** – Protected routes and role checks.
+  - **Data tampering** – Validated requests and server-side checks for entity ownership.
+  - **Payment fraud** – Server-side verification of Stripe events via webhook secrets and idempotent flows.
+
+---
+
+## 6. Tech Stack
+
+- **Runtime:** Node.js (>=14)
+- **Framework:** Express.js
+- **Database:** MongoDB Atlas (cloud-hosted MongoDB)
+- **Payments:** Stripe Payments (server-side integration + webhooks)
+- **Templating:** Handlebars (HBS) for server-side rendered views
+- **UI Framework:** Bootstrap 4 for responsive layouts
+- **Authentication & Security:** JWT, bcrypt, helmet, express-rate-limit, express-mongo-sanitize, csurf
+- **Real-time:** Socket.IO for notifications and live updates
+- **Email:** Nodemailer for transactional emails
+
+Repository layout (high level):
+- **Root:** Shared configuration, background jobs, and scripts
+- **`admin-app/`** – Admin console (Express + HBS)
+- **`tenant-app/`** – Tenant portal (Express + HBS)
+- **`shared/`** – Shared models, config, middleware, and services
+- **`utils/`** – Cross-cutting utilities (JWT, ledger, PDFs, rent logic)
+- **`jobs/`** – Cron-style jobs (monthly invoice generation, reminders, late fees)
+
+---
+
+## 7. Deployment
+
+LeaseHub is designed to be deployed as a modern cloud-hosted Node.js application.
+
+- **Source control:** GitHub (monorepo containing admin and tenant apps).
+- **Application hosting:** Render (or similar Node.js hosting platform).
+  - Admin and tenant apps can be deployed as separate services or a single process, depending on environment.
+- **Database:** MongoDB Atlas for production-grade, managed MongoDB.
+- **Process manager:** Platform process configuration (e.g., Render, Heroku-like `Procfile`).
+- **Environment variables:** Managed through the deployment platform (Render dashboard, GitHub secrets, etc.).
+
+Typical deployment flow:
+1. Push changes to GitHub.
+2. Render (or equivalent) pulls from the main branch and runs the install/start commands.
+3. Environment variables are injected from the platform configuration.
+4. Admin and tenant apps start and connect to MongoDB Atlas and Stripe.
+
+---
+
+## 8. Environment Variables
+
+The following environment variables are required for a production-like setup (values are **not** committed to the repo):
+
+- `MONGO_URI` – MongoDB connection string (MongoDB Atlas recommended).
+- `JWT_SECRET` – Secret key used to sign and verify JWTs.
+- `STRIPE_SECRET_KEY` – Secret API key for Stripe server-side calls.
+- `STRIPE_WEBHOOK_SECRET` – Webhook signing secret for verifying Stripe events.
+- `EMAIL_HOST` – SMTP host for transactional emails.
+- `EMAIL_PORT` – SMTP port for transactional emails.
+- `EMAIL_USER` – SMTP username.
+- `EMAIL_PASS` – SMTP password.
+
+Additional environment variables (depending on your setup) may include:
+
+- `NODE_ENV` – `development` or `production`.
+- `SESSION_SECRET` – Secret for Express sessions.
+- `TENANT_URL` – Public URL of the tenant portal.
+- `ADMIN_URL` – Public URL of the admin console.
+
+---
+
+## 9. How to Run Locally
+
+### Prerequisites
+
+- Node.js >= 14
+- npm >= 6
+- A MongoDB instance (local or MongoDB Atlas)
+- A Stripe account and test keys
+
+### Steps
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/your-username/leasehub.git
+   cd leasehub
+   ```
+
+2. **Install dependencies (root + apps)**
+
+   From the project root:
+
+   ```bash
+   npm run setup
+   ```
+
+   This installs dependencies in:
+   - Root (shared packages, jobs, utilities)
+   - `tenant-app/`
+   - `admin-app/`
+
+3. **Create and configure your `.env` file**
+
+   In the project root, create a `.env` file (you can use `.env.example` as a reference if present) and set at least:
+
+   ```bash
+   MONGO_URI=your-mongodb-connection-string
+   JWT_SECRET=some-strong-secret
+   STRIPE_SECRET_KEY=your-stripe-secret-key
+   STRIPE_WEBHOOK_SECRET=your-stripe-webhook-secret
+   EMAIL_HOST=your-smtp-host
+   EMAIL_PORT=your-smtp-port
+   EMAIL_USER=your-smtp-user
+   EMAIL_PASS=your-smtp-password
+   NODE_ENV=development
+   ```
+
+4. **Run the apps in development mode**
+
+   From the project root:
+
+   ```bash
+   npm run dev:all
+   ```
+
+   This will run both:
+   - Tenant app (`tenant-app/app.js`)
+   - Admin app (`admin-app/app.js`)
+
+5. **Access the applications**
+
+   Default ports may differ depending on configuration, but typically:
+   - Tenant portal: `http://localhost:3000` (or configured tenant port)
+   - Admin console: `http://localhost:3001` (or configured admin port)
+
+   Check each app's `app.js` or configuration to confirm ports.
+
+6. **Production-style start**
+
+   To simulate a production-style run from the root:
+
+   ```bash
+   npm start
+   ```
+
+   Ensure `NODE_ENV=production` and all required environment variables are set.
+
+---
+
+## 10. Real-World Use Case
+
+### For Landlords / Property Managers
+
+- Centralize all properties, tenants, applications, and financials in one system.
+- Automate monthly rent invoices and late fee calculations instead of relying on spreadsheets.
+- Gain clear visibility into occupancy, delinquency, and revenue trends through the admin dashboard.
+- Reduce disputes through a transparent history of invoices, payments, and audit logs.
+- Improve operations with structured maintenance workflows and tenant communications.
+
+### For Tenants
+
+- Discover available properties and apply without visiting an office.
+- Pay booking deposits and monthly rent online using secure Stripe payments.
+- See a clear, time-stamped history of invoices, payments, and outstanding balances.
+- Receive automated reminders for due dates and important updates.
+- Submit maintenance requests and track their resolution without phone calls or emails.
+
+### Why This Is Better Than Traditional Systems
+
+- Replaces manual, error-prone processes with automated, traceable workflows.
+- Provides a unified view for admins and a self-service portal for tenants.
+- Scales from small portfolios to larger multi-property operations.
+- Designed with security, auditability, and real SaaS deployment patterns in mind.
+
+---
+
+## 11. Future Enhancements
+
+Planned and potential extensions to LeaseHub include:
+
+- **Mobile app** – Native or cross-platform mobile apps for tenants and admins.
+- **Advanced analytics** – Portfolio analytics, churn prediction, and cohort-based reporting.
+- **AI rent prediction** – Use historical data and market trends to suggest optimal rent pricing.
+- **Multi-owner support** – Support multiple property owners with isolated reporting and permissions.
+- **Third-party integrations** – Integrations with accounting tools, CRM systems, and marketing platforms.
+
+---
+
+## Repository & Structure Notes
+
+This repository has been structured to look and behave like a real startup backend/monorepo:
+
+- Clear separation between **tenant** and **admin** applications.
+- Shared models, config, middleware, and services in the `shared/` directory.
+- Background jobs for invoices, reminders, and late fees in `jobs/`.
+- Utilities in `utils/` (JWT helpers, ledger service, PDF generator, rent logic, logging, notifications).
+- Optional deep-dive documentation in files such as `TESTING-GUIDE.md` (manual QA flows) and `SECURITY-NOTES.md` (hardening details).
+
+No extraneous runtime files or dead test/spec files are required for deployment, keeping the repository clean and recruiter-friendly while preserving all core functionality.

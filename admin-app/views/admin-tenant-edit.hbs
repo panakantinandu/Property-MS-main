@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Tenant - LeaseHub Admin</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/admin/dashboard">🏢 LeaseHub Admin</a>
+    </nav>
+    <div class="container mt-4">
+        <a href="/admin/tenants" class="btn btn-link mb-3"><i class="fas fa-arrow-left"></i> Back to Tenants</a>
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0"><i class="fas fa-edit"></i> Edit Tenant</h4>
+            </div>
+            <div class="card-body">
+                <form action="/admin/tenants/{{tenant._id}}" method="POST">
+                    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input type="text" class="form-control" name="firstname" value="{{tenant.firstname}}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" class="form-control" name="lastname" value="{{tenant.lastname}}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" class="form-control" name="email" value="{{tenant.email}}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" class="form-control" name="phone" value="{{tenant.phone}}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select class="form-control" name="status">
+                            <option value="active" {{#if (eq tenant.status 'active')}}selected{{/if}}>Active</option>
+                            <option value="inactive" {{#if (eq tenant.status 'inactive')}}selected{{/if}}>Inactive</option>
+                            <option value="suspended" {{#if (eq tenant.status 'suspended')}}selected{{/if}}>Suspended</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Update Tenant</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{csrfToken}}">
+    <title>My Invoices - LeaseHub</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --danger: #f44336;
+            --dark: #2c3e50;
+        }
+
+        body {
+            background: #f5f7fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            color: white !important;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            margin: 0 10px;
+            transition: 0.3s;
+        }
+
+        .nav-link:hover {
+            color: white !important;
+            transform: translateY(-2px);
+        }
+
+        .main-content {
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .page-header h2 {
+            margin: 0;
+            color: var(--dark);
+            font-weight: 700;
+        }
+
+        .content-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table th {
+            border-top: none;
+            color: var(--dark);
+            font-weight: 600;
+            background: #f8f9fa;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .badge-success { background: var(--success); color: white; }
+        .badge-warning { background: var(--warning); color: white; }
+        .badge-danger { background: var(--danger); color: white; }
+        .badge-info { background: var(--primary); color: white; }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-state i {
+            font-size: 60px;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h5 {
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    {{!-- Navigation --}}
+    <nav class="navbar navbar-expand-lg">
+        <a class="navbar-brand" href="/tenant/dashboard">🏠 LeaseHub</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/tenant/dashboard">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/tenant/properties">Properties</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/tenant/applications">Applications</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/tenant/invoices">Invoices</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/tenant/payments">Payment History</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/tenant/maintenance">Maintenance</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/tenant/profile">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/tenant/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    {{!-- Main Content --}}
+    <div class="main-content">
+        <div class="page-header">
+            <h2><i class="fas fa-file-invoice"></i> My Invoices</h2>
+            <p style="margin: 10px 0 10px; color: #7f8c8d;">View all your rent and late fee invoices</p>
+            {{#if invoices.length}}
+            <div class="mt-2" style="font-size: 0.9rem;">
+                <div><strong>Rent:</strong> {{currencySymbol}}{{rentDue}}</div>
+                <div><strong>Late Fee:</strong> {{currencySymbol}}{{lateFeeDue}}</div>
+                <div><strong>Total Due:</strong> {{currencySymbol}}{{totalDue}}</div>
+            </div>
+            {{/if}}
+        </div>
+
+        <div class="content-card">
+            {{#if invoices.length}}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Month</th>
+                            <th>Amount</th>
+                            <th>Due Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each invoices}}
+                        <tr>
+                            <td>
+                                {{#if month}}{{month}}{{else}}No month{{/if}}
+                                <br><small style="color: #999;">ID: {{_id}}</small>
+                            </td>
+                            <td><strong>{{currencySymbol}}{{#if totalAmount}}{{totalAmount}}{{else}}0{{/if}}</strong></td>
+                            <td>{{#if dueDate}}{{dueDate}}{{else}}No date{{/if}}</td>
+                            <td>
+                                {{#if status}}
+                                    {{#if (eq status 'paid')}}
+                                        <span class="badge badge-success">Paid</span>
+                                    {{else if (eq status 'partial')}}
+                                        <span class="badge badge-info">Partial</span>
+                                    {{else if (eq status 'overdue')}}
+                                        <span class="badge badge-danger">Overdue</span>
+                                    {{else if (eq status 'unpaid')}}
+                                        <span class="badge badge-warning">Unpaid</span>
+                                    {{else}}
+                                        <span class="badge badge-secondary">{{status}}</span>
+                                    {{/if}}
+                                {{else}}
+                                    <span class="badge badge-secondary">Unknown</span>
+                                {{/if}}
+                            </td>
+                            <td>
+                                {{#if _id}}
+                                    {{#unless (eq status 'paid')}}
+                                        <button type="button" class="btn btn-sm btn-primary pay-now-btn" data-invoice-id="{{_id}}">
+                                            <i class="fas fa-credit-card"></i> Pay Now
+                                        </button>
+                                    {{else}}
+                                        <button class="btn btn-sm btn-secondary" disabled>
+                                            <i class="fas fa-check"></i> Paid
+                                        </button>
+                                    {{/unless}}
+                                {{else}}
+                                    <span class="text-danger">Error: No Invoice ID</span>
+                                {{/if}}
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+            {{else}}
+            <div class="empty-state">
+                <i class="fas fa-file-invoice"></i>
+                <h5>No Invoices Yet</h5>
+                <p>Your rent invoices will appear here</p>
+            </div>
+            {{/if}}
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <script nonce="{{cspNonce}}">
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        $(document).ready(function() {
+            $('.pay-now-btn').on('click', function() {
+                const btn = $(this);
+                const invoiceId = btn.data('invoice-id');
+                
+                // Disable button and show loading
+                btn.prop('disabled', true);
+                btn.html('<i class="fas fa-spinner fa-spin"></i> Processing...');
+                
+                // Submit payment request
+                    $.ajax({
+                        url: `/tenant/invoices/${invoiceId}/pay`,
+                        method: 'POST',
+                        xhrFields: { withCredentials: true },
+                        headers: {
+                            ...(csrfToken ? { 'X-CSRF-Token': csrfToken } : {}),
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                    success: function(response) {
+                        if (response.url) {
+                            // Redirect to Stripe checkout
+                            window.location.href = response.url;
+                        } else {
+                            alert('Error: No payment URL received');
+                            btn.prop('disabled', false);
+                            btn.html('<i class="fas fa-credit-card"></i> Pay Now');
+                        }
+                    },
+                    error: function(xhr) {
+                        alert('Payment initiation failed. Please try again.');
+                        btn.prop('disabled', false);
+                        btn.html('<i class="fas fa-credit-card"></i> Pay Now');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

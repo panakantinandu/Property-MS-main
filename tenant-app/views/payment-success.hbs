@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Successful - LeaseHub</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .success-container {
+            background: white;
+            border-radius: 15px;
+            padding: 60px 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 500px;
+        }
+
+        .success-icon {
+            font-size: 80px;
+            color: #4caf50;
+            margin-bottom: 30px;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .success-container h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .success-container p {
+            color: #7f8c8d;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .session-id {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            word-break: break-all;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .btn-group {
+            margin-top: 30px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 12px 30px;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .alert-info {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            color: #1565c0;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="success-container">
+        <div class="success-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+
+        <h2>Payment Successful!</h2>
+        <p class="text-success"><strong>Your payment has been processed successfully.</strong></p>
+
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> Your invoice has been marked as paid. A confirmation email will be sent shortly.
+        </div>
+
+        <div class="session-id">
+            <small><strong>Transaction ID:</strong></small><br>
+            {{sessionId}}
+        </div>
+
+        <p class="text-muted mt-3">You can view your payment history and receipt in the Payments section.</p>
+
+        <p class="text-muted mt-1" id="redirect-message">
+            You will be redirected to your dashboard in <span id="redirect-countdown">5</span> seconds.
+        </p>
+
+        <div class="btn-group">
+            <a href="/tenant/payments" class="btn btn-primary">
+                <i class="fas fa-history"></i> View Payment History
+            </a>
+            <a href="/tenant/dashboard" class="btn btn-outline-primary">
+                <i class="fas fa-home"></i> Go to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script nonce="{{cspNonce}}">
+        // Log for debugging
+        console.log('Payment completed. Session ID: {{sessionId}}');
+
+        // Auto-redirect back to dashboard after a short delay so
+        // tenants don't have to click manually every time.
+        (function () {
+            const redirectUrl = '/tenant/dashboard';
+            const secondsTotal = 5;
+            let remaining = secondsTotal;
+
+            const countdownEl = document.getElementById('redirect-countdown');
+
+            const intervalId = setInterval(() => {
+                remaining -= 1;
+                if (countdownEl && remaining >= 0) {
+                    countdownEl.textContent = String(remaining);
+                }
+
+                if (remaining <= 0) {
+                    clearInterval(intervalId);
+                    window.location.href = redirectUrl;
+                }
+            }, 1000);
+        })();
+    </script>
+</body>
+</html>

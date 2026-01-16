@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{csrfToken}}">
+    <title>Create Invoice - LeaseHub Admin</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding-bottom: 50px;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .navbar-brand {
+            color: white !important;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        .nav-link {
+            color: white !important;
+            margin: 0 10px;
+            transition: 0.3s;
+        }
+        .nav-link:hover {
+            opacity: 0.8;
+        }
+        .container {
+            margin-top: 30px;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px 10px 0 0;
+            padding: 20px;
+        }
+        .card-body {
+            padding: 30px;
+        }
+        .form-group label {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .form-control {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px 15px;
+            font-size: 0.95rem;
+        }
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 5px;
+            padding: 10px 30px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 30px;
+        }
+        .alert {
+            border-radius: 5px;
+            border: none;
+        }
+        .icon-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        .icon-header i {
+            font-size: 2rem;
+        }
+        .form-row {
+            margin-bottom: 20px;
+        }
+        .text-muted {
+            font-size: 0.9rem;
+        }
+        .success-message {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+        .error-message {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #dc3545;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/admin/dashboard">
+                <i class="fas fa-home"></i> LeaseHub Admin
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/dashboard">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/tenants">Tenants</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/properties">Properties</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/applications">Applications</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/payments">Payments</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/logout">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="icon-header">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                            <div>
+                                <h3 class="mb-0">Create Invoice</h3>
+                                <p class="mb-0 text-white" style="font-size: 0.9rem; opacity: 0.9;">Create a new invoice for a tenant</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form id="invoiceForm">
+                            <div class="form-group">
+                                <label for="tenantId">Select Tenant <span class="text-danger">*</span></label>
+                                <select class="form-control" id="tenantId" name="tenantId" required>
+                                    <option value="">-- Select a Tenant --</option>
+                                    {{#each tenants}}
+                                    <option value="{{this._id}}">{{this.firstname}} {{this.lastname}} ({{this.email}})</option>
+                                    {{/each}}
+                                </select>
+                                <small class="text-muted">Choose the tenant for this invoice</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="propertyId">Property <span class="text-danger">*</span></label>
+                                <select class="form-control" id="propertyId" name="propertyId" required>
+                                    <option value="">-- Select a Property --</option>
+                                    {{#each properties}}
+                                    <option value="{{this._id}}">{{this.propertyname}}</option>
+                                    {{/each}}
+                                </select>
+                                <small class="text-muted">Select the property for this invoice</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="month">Month <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="month" name="month" 
+                                       placeholder="e.g., January 2024" required>
+                                <small class="text-muted">Invoice month</small>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="rentAmount">Rent Amount <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">₹</span>
+                                        </div>
+                                        <input type="number" class="form-control" id="rentAmount" name="rentAmount" 
+                                               placeholder="0.00" step="0.01" min="0" required>
+                                    </div>
+                                    <small class="text-muted">Base rent amount</small>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label for="maintenanceCharges">Maintenance Charges</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">₹</span>
+                                        </div>
+                                        <input type="number" class="form-control" id="maintenanceCharges" name="maintenanceCharges" 
+                                               placeholder="0.00" step="0.01" min="0" value="0">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label for="waterCharges">Water Charges</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">₹</span>
+                                        </div>
+                                        <input type="number" class="form-control" id="waterCharges" name="waterCharges" 
+                                               placeholder="0.00" step="0.01" min="0" value="0">
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                    <label for="electricityCharges">Electricity Charges</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">₹</span>
+                                        </div>
+                                        <input type="number" class="form-control" id="electricityCharges" name="electricityCharges" 
+                                               placeholder="0.00" step="0.01" min="0" value="0">
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                    <label for="otherCharges">Other Charges</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">₹</span>
+                                        </div>
+                                        <input type="number" class="form-control" id="otherCharges" name="otherCharges" 
+                                               placeholder="0.00" step="0.01" min="0" value="0">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="margin-top: 30px;">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> Create Invoice
+                                </button>
+                                <a href="/admin/payments" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> Back to Payments
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="success-message" id="successMessage">
+        <i class="fas fa-check-circle"></i> Invoice created successfully!
+    </div>
+    <div class="error-message" id="errorMessage">
+        <i class="fas fa-exclamation-circle"></i> <span id="errorText"></span>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script nonce="{{cspNonce}}">
+        $(document).ready(function() {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+            $('#invoiceForm').on('submit', function(e) {
+                e.preventDefault();
+
+                const rentAmount = parseFloat($('#rentAmount').val());
+                const maintenanceCharges = parseFloat($('#maintenanceCharges').val()) || 0;
+                const waterCharges = parseFloat($('#waterCharges').val()) || 0;
+                const electricityCharges = parseFloat($('#electricityCharges').val()) || 0;
+                const otherCharges = parseFloat($('#otherCharges').val()) || 0;
+                const totalAmount = rentAmount + maintenanceCharges + waterCharges + electricityCharges + otherCharges;
+
+                const formData = {
+                    tenantId: $('#tenantId').val(),
+                    propertyId: $('#propertyId').val(),
+                    month: $('#month').val(),
+                    rentAmount: rentAmount,
+                    maintenanceCharges: maintenanceCharges,
+                    waterCharges: waterCharges,
+                    electricityCharges: electricityCharges,
+                    otherCharges: otherCharges,
+                    totalAmount: totalAmount,
+                    dueDate: $('#dueDate').val()
+                };
+
+                // Validation
+                if (!formData.tenantId) {
+                    showError('Please select a tenant');
+                    return;
+                }
+                if (!formData.propertyId) {
+                    showError('Please select a property');
+                    return;
+                }
+                if (!formData.month) {
+                    showError('Please enter the month');
+                    return;
+                }
+                if (!formData.rentAmount || formData.rentAmount <= 0) {
+                    showError('Please enter a valid rent amount');
+                    return;
+                }
+                if (!formData.dueDate) {
+                    showError('Please select a due date');
+                    return;
+                }
+
+                $.ajax({
+                    url: '/admin/invoices/create',
+                    type: 'POST',
+                    headers: {
+                        ...(csrfToken ? { 'X-CSRF-Token': csrfToken } : {}),
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    data: formData,
+                    success: function(response) {
+                        if (response.success) {
+                            showSuccess();
+                            $('#invoiceForm')[0].reset();
+                            setTimeout(() => {
+                                window.location.href = '/admin/payments';
+                            }, 1500);
+                        } else {
+                            showError(response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        const error = xhr.responseJSON?.message || 'Error creating invoice';
+                        showError(error);
+                    }
+                });
+            });
+
+            function showSuccess() {
+                $('#successMessage').fadeIn();
+                setTimeout(() => {
+                    $('#successMessage').fadeOut();
+                }, 3000);
+            }
+
+            function showError(message) {
+                $('#errorText').text(message);
+                $('#errorMessage').fadeIn();
+                setTimeout(() => {
+                    $('#errorMessage').fadeOut();
+                }, 3000);
+            }
+
+            // Set minimum due date to today
+            const today = new Date().toISOString().split('T')[0];
+            $('#dueDate').attr('min', today);
+        });
+    </script>
+</body>
+</html>
