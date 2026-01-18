@@ -581,7 +581,8 @@ app.use((req, res) => {
 // ======================
 // START SERVER
 // ======================
-const PORT = process.env.TENANT_PORT || 3000;
+// Prefer Render/hosting provider PORT, fall back to configured TENANT_PORT or default.
+const PORT = process.env.PORT || process.env.TENANT_PORT || 3000;
 server.listen(PORT, () => {
     console.log(`
 ╔════════════════════════════════════════╗

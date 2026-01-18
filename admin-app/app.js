@@ -236,7 +236,8 @@ app.use((req, res) => {
 // ======================
 // START SERVER
 // ======================
-const PORT = process.env.ADMIN_PORT || 4000;
+// Prefer Render/hosting provider PORT, fall back to configured ADMIN_PORT or default.
+const PORT = process.env.PORT || process.env.ADMIN_PORT || 4000;
 server.listen(PORT, () => {
     console.log(`
 ╔════════════════════════════════════════╗
