@@ -80,15 +80,10 @@ Use the following credentials to explore the live demo:
 Email: nan
 Password: nan427
 
-shell
-Copy code
-
 ### Tenant
 Email: email@email.com
 Password: Email@098
 
-yaml
-Copy code
 
 > ⚠️ **Payments run in Stripe Test Mode** — no real money is charged.
 
@@ -156,8 +151,6 @@ Property-MS-main/
 ├── CONTRIBUTING.md
 └── .env.example
 
-yaml
-Copy code
 
 ---
 
@@ -178,7 +171,6 @@ npm install
 cp .env.example .env
 Environment Variables
 env
-Copy code
 MONGO_URI=
 JWT_SECRET=
 STRIPE_SECRET_KEY=
@@ -186,13 +178,8 @@ STRIPE_WEBHOOK_SECRET=
 RESEND_API_KEY=
 EMAIL_FROM=LeaseHub <onboarding@resend.dev>
 Run Locally
-bash
-Copy code
 npm start
 Server starts at:
-
-arduino
-Copy code
 http://localhost:3000
 👤 User Roles
 Admin
