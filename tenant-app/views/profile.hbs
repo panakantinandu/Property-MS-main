@@ -168,9 +168,6 @@
             margin-top: 20px;
             border: 1px dashed #e2e8f0;
         }
-        .alert {
-            border-radius: 8px;
-        }
         .password-requirements {
             background: #e9ecff;
             padding: 15px;
@@ -192,35 +189,284 @@
             gap: 8px;
         }
         .requirement-item.met {
-        </script>
-    </body>
-    </html>
-                                    Leave these fields blank if you don't want to change your password.
+            color: #22543d;
+        }
+        .requirement-item.unmet {
+            color: #b22222;
+        }
+        .otp-section {
+            display: none;
+            background: #fff7e6;
+            padding: 12px;
+            border: 1px dashed #f0ad4e;
+            border-radius: 8px;
+            margin-top: 14px;
+        }
+        .otp-section.show {
+            display: block;
+        }
+        .alert {
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <div style="margin-bottom: 20px;">
+            <a href="/tenant/dashboard" class="back-link" style="margin-right: 15px;">
+                <i class="fas fa-arrow-left"></i> Dashboard
+            </a>
+            <a href="/tenant/properties" class="back-link" style="margin-right: 15px;">
+                <i class="fas fa-home"></i> Browse Properties
+            </a>
+            <a href="/tenant/applications" class="back-link">
+                <i class="fas fa-file-alt"></i> My Applications
+            </a>
+        </div>
+
+        {{#if success}}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i> {{success}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {{/if}}
+
+        {{#if error}}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle"></i> {{error}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {{/if}}
+
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h2>{{tenant.firstname}} {{tenant.lastname}}</h2>
+                <p style="opacity: 0.9; margin: 0;">Tenant ID: {{tenant.tenantid}}</p>
+                <span class="status-badge status-active" style="margin-top: 10px; display: inline-block;">
+                    <i class="fas fa-check"></i> {{tenant.status}}
+                </span>
+            </div>
+
+            <div class="profile-body">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#view" role="tab">
+                            <i class="fas fa-eye"></i> View Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#edit" role="tab">
+                            <i class="fas fa-edit"></i> Edit Profile
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="view" role="tabpanel">
+                        <div class="info-section">
+                            <h5><i class="fas fa-user-circle"></i> Personal Information</h5>
+                            <div class="info-row">
+                                <div class="info-label">Full Name:</div>
+                                <div class="info-value">{{tenant.firstname}} {{tenant.lastname}}</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">Email:</div>
+                                <div class="info-value">{{tenant.email}}</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">Phone:</div>
+                                <div class="info-value">{{tenant.phone}}</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">Date of Birth:</div>
+                                <div class="info-value">{{#if tenant.dob}}{{formatDate tenant.dob}}{{else}}Not provided{{/if}}</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">Gender:</div>
+                                <div class="info-value">{{#if tenant.gender}}{{tenant.gender}}{{else}}Not provided{{/if}}</div>
+                            </div>
+                        </div>
+
+                        <div class="info-section">
+                            <h5><i class="fas fa-briefcase"></i> Professional Details</h5>
+                            <div class="info-row">
+                                <div class="info-label">Occupation:</div>
+                                <div class="info-value">{{#if tenant.occupation}}{{tenant.occupation}}{{else}}Not provided{{/if}}</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">Company Name:</div>
+                                <div class="info-value">{{#if tenant.companyName}}{{tenant.companyName}}{{else}}Not provided{{/if}}</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">Current Address:</div>
+                                <div class="info-value">{{#if tenant.currentAddress}}{{tenant.currentAddress}}{{else}}Not provided{{/if}}</div>
+                            </div>
+                        </div>
+
+                        {{#if tenant.propertyId}}
+                        <div class="info-section">
+                            <h5><i class="fas fa-home"></i> Current Property</h5>
+                            <div class="info-row">
+                                <div class="info-label">Property:</div>
+                                <div class="info-value">
+                                    {{tenant.propertyId.propertyName}}<br>
+                                    <small>{{tenant.propertyId.address}}, {{tenant.propertyId.city}}</small>
+                                </div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">Lease Period:</div>
+                                <div class="info-value">
+                                    {{#if tenant.leaseStartDate}}
+                                        {{formatDate tenant.leaseStartDate}} to {{formatDate tenant.leaseEndDate}}
+                                    {{else}}
+                                        Not assigned
+                                    {{/if}}
+                                </div>
+                            </div>
+                        </div>
+                        {{/if}}
+
+                        {{#if tenant.emergencyContact}}
+                        <div class="info-section">
+                            <h5><i class="fas fa-phone-alt"></i> Emergency Contact</h5>
+                            <div class="info-row">
+                                <div class="info-label">Name:</div>
+                                <div class="info-value">{{tenant.emergencyContact.name}}</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">Phone:</div>
+                                <div class="info-value">{{tenant.emergencyContact.phone}}</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">Relationship:</div>
+                                <div class="info-value">{{tenant.emergencyContact.relation}}</div>
+                            </div>
+                        </div>
+                        {{/if}}
+                    </div>
+
+                    <div class="tab-pane fade" id="edit" role="tabpanel">
+                        <form id="profileForm" method="POST" action="/tenant/profile/update">
+                            <input type="hidden" name="_csrf" value="{{csrfToken}}">
+                            <div class="info-section">
+                                <h5><i class="fas fa-user-circle"></i> Personal Information</h5>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">First Name *</label>
+                                            <input type="text" class="form-control" name="firstname" value="{{tenant.firstname}}" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Last Name *</label>
+                                            <input type="text" class="form-control" name="lastname" value="{{tenant.lastname}}" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Email *</label>
+                                            <input type="email" class="form-control" name="email" value="{{tenant.email}}" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Phone *</label>
+                                            <input type="tel" class="form-control" name="phone" value="{{tenant.phone}}" pattern="[0-9]{10}" title="10-digit phone number" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Date of Birth</label>
+                                            <input type="date" class="form-control" name="dob" value="{{#if tenant.dob}}{{tenant.dob}}{{/if}}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Gender</label>
+                                            <select class="form-control" name="gender">
+                                                <option value="">Select Gender</option>
+                                                <option value="Male" {{#if (eq tenant.gender 'Male')}}selected{{/if}}>Male</option>
+                                                <option value="Female" {{#if (eq tenant.gender 'Female')}}selected{{/if}}>Female</option>
+                                                <option value="Other" {{#if (eq tenant.gender 'Other')}}selected{{/if}}>Other</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="info-section">
+                                <h5><i class="fas fa-briefcase"></i> Professional Details</h5>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Occupation</label>
+                                            <input type="text" class="form-control" name="occupation" value="{{tenant.occupation}}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Company Name</label>
+                                            <input type="text" class="form-control" name="companyName" value="{{tenant.companyName}}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Current Address</label>
+                                    <textarea class="form-control" name="currentAddress" rows="3">{{tenant.currentAddress}}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="info-section">
+                                <h5><i class="fas fa-phone-alt"></i> Emergency Contact</h5>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Contact Name</label>
+                                            <input type="text" class="form-control" name="emergencyContactName" value="{{#if tenant.emergencyContact}}{{tenant.emergencyContact.name}}{{/if}}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Contact Phone</label>
+                                            <input type="tel" class="form-control" name="emergencyContactPhone" value="{{#if tenant.emergencyContact}}{{tenant.emergencyContact.phone}}{{/if}}" pattern="[0-9]{10}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Relationship</label>
+                                            <input type="text" class="form-control" name="emergencyContactRelation" value="{{#if tenant.emergencyContact}}{{tenant.emergencyContact.relation}}{{/if}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="password-section">
+                                <h5 style="color: #495057; margin-bottom: 15px;">
+                                    <i class="fas fa-lock"></i> Change Password (Optional)
+                                </h5>
+                                <p style="color: #6c757d; font-size: 14px; margin-bottom: 15px;">
+                                    Leave these fields blank if you do not want to change your password. New passwords must be at least 8 characters and include 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.
                                 </p>
 
-                                <!-- Password validation error alert -->
                                 <div id="passwordError" class="alert alert-danger d-none" role="alert" style="font-size: 14px;">
                                     <i class="fas fa-exclamation-circle"></i> <span id="passwordErrorMsg"></span>
                                 </div>
 
-                                <!-- Password requirements display -->
                                 <div class="password-requirements d-none" id="passwordRequirements">
-                                    <h6><i class="fas fa-check-circle"></i> Password Requirements:</h6>
-                                    <div class="requirement-item unmet" id="req-length">
-                                        <i class="fas fa-times"></i> At least 8 characters
-                                    </div>
-                                    <div class="requirement-item unmet" id="req-uppercase">
-                                        <i class="fas fa-times"></i> At least 1 uppercase letter (A-Z)
-                                    </div>
-                                    <div class="requirement-item unmet" id="req-lowercase">
-                                        <i class="fas fa-times"></i> At least 1 lowercase letter (a-z)
-                                    </div>
-                                    <div class="requirement-item unmet" id="req-number">
-                                        <i class="fas fa-times"></i> At least 1 number (0-9)
-                                    </div>
-                                    <div class="requirement-item unmet" id="req-special">
-                                        <i class="fas fa-times"></i> At least 1 special character (!@#$%^&*)
-                                    </div>
+                                    <h6><i class="fas fa-check-circle"></i> Password Requirements</h6>
+                                    <div class="requirement-item unmet" id="req-length"><i class="fas fa-times"></i> At least 8 characters</div>
+                                    <div class="requirement-item unmet" id="req-uppercase"><i class="fas fa-times"></i> At least 1 uppercase letter</div>
+                                    <div class="requirement-item unmet" id="req-lowercase"><i class="fas fa-times"></i> At least 1 lowercase letter</div>
+                                    <div class="requirement-item unmet" id="req-number"><i class="fas fa-times"></i> At least 1 number</div>
+                                    <div class="requirement-item unmet" id="req-special"><i class="fas fa-times"></i> At least 1 special character</div>
                                 </div>
 
                                 <div class="row">
@@ -240,43 +486,31 @@
                                         <div class="form-group">
                                             <label class="form-label">Confirm New Password</label>
                                             <input type="password" class="form-control" name="confirmNewPassword" id="confirmNewPassword" minlength="8" placeholder="Confirm password">
-                                            <small class="text-success d-none" id="passwordMatchSuccess">
-                                                <i class="fas fa-check-circle"></i> Passwords match
-                                            </small>
-                                            <small class="text-danger d-none" id="passwordMismatchError">
-                                                <i class="fas fa-exclamation-circle"></i> Passwords do not match
-                                            </small>
+                                            <small class="text-success d-none" id="passwordMatchSuccess"><i class="fas fa-check-circle"></i> Passwords match</small>
+                                            <small class="text-danger d-none" id="passwordMismatchError"><i class="fas fa-exclamation-circle"></i> Passwords do not match</small>
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- OTP Section (shown when password change is initiated) -->
                                 <div class="otp-section" id="otpSection">
-                                    <h6 style="margin-bottom: 12px; color: #856404;">
-                                        <i class="fas fa-info-circle"></i> Email Verification Required
-                                    </h6>
-                                    <p style="margin: 10px 0; color: #856404; font-size: 13px;">
-                                        An OTP has been sent to your email. Please enter it to confirm the password change for security purposes.
-                                    </p>
-                                    <div class="form-group" style="margin-top: 12px;">
+                                    <h6 style="margin-bottom: 8px; color: #856404;"><i class="fas fa-info-circle"></i> Email Verification Required</h6>
+                                    <p style="margin: 8px 0; color: #856404; font-size: 13px;">An OTP has been sent to your email. Enter it to confirm the password change.</p>
+                                    <div class="form-group" style="margin-top: 8px;">
                                         <label class="form-label" style="color: #856404;">Verification OTP</label>
                                         <input type="text" class="form-control" name="passwordOTP" id="passwordOTP" placeholder="Enter 6-digit OTP" maxlength="6" style="font-weight: 600; letter-spacing: 4px; text-align: center;">
                                         <small class="text-muted" id="otpTimer" style="margin-top: 5px; display: none;">OTP expires in: <span id="timerCount">10:00</span></small>
                                     </div>
                                 </div>
 
-                                <!-- Request OTP Button -->
-                                <div style="margin-top: 15px;">
+                                <div style="margin-top: 12px;">
                                     <button type="button" class="btn btn-send-otp" id="sendOtpBtn" style="display: none;">
                                         <i class="fas fa-envelope"></i> Send Verification OTP to Email
                                     </button>
-                                    <small class="text-muted d-block" style="margin-top: 8px;" id="otpHelpText">
-                                        ℹ️ Enter your current password and new password, then click above to receive an OTP for verification.
-                                    </small>
+                                    <small class="text-muted d-block" style="margin-top: 6px;" id="otpHelpText">Enter your current password and new password, then click above to receive an OTP.</small>
                                 </div>
                             </div>
 
-                            <div class="text-center" style="margin-top: 30px;">
+                            <div class="text-center" style="margin-top: 24px;">
                                 <button type="submit" class="btn btn-edit" id="submitBtn">
                                     <i class="fas fa-save"></i> Update Profile
                                 </button>
@@ -292,18 +526,14 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script nonce="{{cspNonce}}">
-        // Real-time Socket.IO support
         const socket = io();
-        
-        // Listen for profile update events from other sessions
+
         socket.on('profileUpdate', (data) => {
             if (data.message) {
-                console.log('📡 Real-time notification:', data.message);
-                // Could be used for cross-session updates in future
+                console.log('Profile update notice:', data.message);
             }
         });
 
-        // Password validation with real-time requirements checking
         const form = document.getElementById('profileForm');
         const newPasswordEl = document.getElementById('newPassword');
         const confirmNewPasswordEl = document.getElementById('confirmNewPassword');
@@ -315,9 +545,9 @@
         const otpSection = document.getElementById('otpSection');
         const passwordOTPEl = document.getElementById('passwordOTP');
         const submitBtn = document.getElementById('submitBtn');
-        
-        // Password validation regex: 8+ chars, 1 uppercase, 1 lowercase, 1 number, 1 special char
         const passwordRule = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+        const csrfTokenInput = document.querySelector('input[name="_csrf"]');
+        const csrfToken = csrfTokenInput ? csrfTokenInput.value : '';
 
         function hidePasswordError() {
             passwordError.classList.add('d-none');
@@ -329,41 +559,9 @@
             passwordError.classList.remove('d-none');
         }
 
-        // Real-time password requirement checking
-        newPasswordEl.addEventListener('input', function() {
-            const pwd = this.value;
-            
-            if (pwd.length > 0) {
-                passwordRequirements.classList.remove('d-none');
-            } else {
-                passwordRequirements.classList.add('d-none');
-            }
-
-            // Check each requirement
-            const hasLength = pwd.length >= 8;
-            const hasUppercase = /[A-Z]/.test(pwd);
-            const hasLowercase = /[a-z]/.test(pwd);
-            const hasNumber = /\d/.test(pwd);
-            const hasSpecial = /[^A-Za-z0-9]/.test(pwd);
-
-            // Update UI for each requirement
-            updateRequirement('req-length', hasLength);
-            updateRequirement('req-uppercase', hasUppercase);
-            updateRequirement('req-lowercase', hasLowercase);
-            updateRequirement('req-number', hasNumber);
-            updateRequirement('req-special', hasSpecial);
-
-            // Show/hide OTP button based on requirements
-            const allMet = hasLength && hasUppercase && hasLowercase && hasNumber && hasSpecial;
-            if (allMet && currentPasswordEl.value && confirmNewPasswordEl.value === pwd) {
-                sendOtpBtn.style.display = 'inline-block';
-            } else {
-                sendOtpBtn.style.display = 'none';
-            }
-        });
-
         function updateRequirement(id, met) {
             const el = document.getElementById(id);
+            if (!el) return;
             if (met) {
                 el.classList.remove('unmet');
                 el.classList.add('met');
@@ -375,7 +573,34 @@
             }
         }
 
-        // Real-time password match checking
+        newPasswordEl.addEventListener('input', function() {
+            const pwd = this.value;
+            if (pwd.length > 0) {
+                passwordRequirements.classList.remove('d-none');
+            } else {
+                passwordRequirements.classList.add('d-none');
+            }
+
+            const hasLength = pwd.length >= 8;
+            const hasUppercase = /[A-Z]/.test(pwd);
+            const hasLowercase = /[a-z]/.test(pwd);
+            const hasNumber = /\d/.test(pwd);
+            const hasSpecial = /[^A-Za-z0-9]/.test(pwd);
+
+            updateRequirement('req-length', hasLength);
+            updateRequirement('req-uppercase', hasUppercase);
+            updateRequirement('req-lowercase', hasLowercase);
+            updateRequirement('req-number', hasNumber);
+            updateRequirement('req-special', hasSpecial);
+
+            const allMet = hasLength && hasUppercase && hasLowercase && hasNumber && hasSpecial;
+            if (allMet && currentPasswordEl.value && confirmNewPasswordEl.value === pwd) {
+                sendOtpBtn.style.display = 'inline-block';
+            } else {
+                sendOtpBtn.style.display = 'none';
+            }
+        });
+
         confirmNewPasswordEl.addEventListener('input', function() {
             const newPwd = newPasswordEl.value;
             const confirmPwd = this.value;
@@ -384,7 +609,6 @@
                 if (newPwd === confirmPwd) {
                     document.getElementById('passwordMatchSuccess').classList.remove('d-none');
                     document.getElementById('passwordMismatchError').classList.add('d-none');
-                    // Show OTP button if all other conditions are met
                     if (passwordRule.test(newPwd) && currentPasswordEl.value) {
                         sendOtpBtn.style.display = 'inline-block';
                     }
@@ -399,9 +623,7 @@
             }
         });
 
-        // Current password input listener
         currentPasswordEl.addEventListener('input', function() {
-            // Show OTP button if all requirements are met
             const newPwd = newPasswordEl.value;
             const confirmPwd = confirmNewPasswordEl.value;
             if (passwordRule.test(newPwd) && confirmPwd === newPwd && this.value) {
@@ -411,10 +633,8 @@
             }
         });
 
-        // Send OTP
         sendOtpBtn.addEventListener('click', async function() {
             const currentPassword = currentPasswordEl.value.trim();
-            
             if (!currentPassword) {
                 showPasswordError('Enter your current password');
                 return;
@@ -428,26 +648,30 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'CSRF-Token': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest'
                     },
                     body: JSON.stringify({ currentPassword })
                 });
 
-                const result = await response.json();
+                let result = {};
+                try {
+                    result = await response.json();
+                } catch (_) {
+                    // Non-JSON response (e.g., CSRF failure) will be handled generically below
+                }
+
+                if (!response.ok || !result.success) {
+                    showPasswordError(result.message || 'Failed to send OTP');
+                    return;
+                }
 
                 if (result.success) {
-                    // Show OTP section
                     otpSection.classList.add('show');
                     document.getElementById('otpTimer').style.display = 'block';
                     passwordOTPEl.focus();
-                    
-                    // Start OTP timer
                     startOTPTimer();
-                    
                     hidePasswordError();
-                    showPasswordError('');
-                    alert('✅ OTP sent! Check your email and enter the code.');
-                } else {
-                    showPasswordError(result.message || 'Failed to send OTP');
                 }
             } catch (error) {
                 console.error('Error sending OTP:', error);
@@ -458,17 +682,15 @@
             }
         });
 
-        // OTP Timer
         function startOTPTimer() {
-            let timeRemaining = 600; // 10 minutes in seconds
+            let timeRemaining = 600;
             const timerCount = document.getElementById('timerCount');
-            
             const timer = setInterval(() => {
                 timeRemaining--;
                 const minutes = Math.floor(timeRemaining / 60);
                 const seconds = timeRemaining % 60;
                 timerCount.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-                
+
                 if (timeRemaining <= 0) {
                     clearInterval(timer);
                     otpSection.classList.remove('show');
@@ -479,7 +701,6 @@
             }, 1000);
         }
 
-        // Form submission validation
         form.addEventListener('submit', function(e) {
             hidePasswordError();
             const newPassword = newPasswordEl.value.trim();
@@ -487,7 +708,6 @@
             const currentPassword = currentPasswordEl.value.trim();
             const passwordOTP = passwordOTPEl.value.trim();
 
-            // If any password field has content, validate all password changes
             if (newPassword || confirmNewPassword || currentPassword) {
                 if (!currentPassword) {
                     e.preventDefault();
@@ -517,7 +737,6 @@
                     return;
                 }
 
-                // Check if OTP is required
                 if (otpSection.classList.contains('show')) {
                     if (!passwordOTP) {
                         e.preventDefault();
@@ -535,7 +754,6 @@
             }
         });
 
-        // Auto-dismiss alerts after 5 seconds
         setTimeout(function() {
             const alerts = document.querySelectorAll('.alert');
             alerts.forEach(alert => {
@@ -544,13 +762,12 @@
             });
         }, 5000);
 
-        // Socket.IO - Emit profile update event
         socket.on('connect', () => {
-            console.log('✅ Real-time connection established');
+            console.log('Real-time connection established');
         });
 
         socket.on('disconnect', () => {
-            console.log('⚠️ Real-time connection lost');
+            console.log('Real-time connection lost');
         });
     </script>
 </body>
