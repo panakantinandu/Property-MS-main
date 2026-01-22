@@ -493,10 +493,6 @@ exports.initiatePayment = async (req, res) => {
 
         const baseUrl = getAppBaseUrl(req);
 
-        const baseUrl = getAppBaseUrl(req);
-
-        const baseUrl = getAppBaseUrl(req);
-
         // Create Stripe Checkout Session
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
@@ -514,12 +510,12 @@ exports.initiatePayment = async (req, res) => {
                         },
                         unit_amount: Math.round(invoice.totalAmount * 100) // Convert to paise
                     },
-                        success_url: `${baseUrl}/tenant/payments/success?session_id={CHECKOUT_SESSION_ID}`,
-                        cancel_url: `${baseUrl}/tenant/payments/cancel`,
+                    quantity: 1
+                }
             ],
             mode: 'payment',
-            success_url: `${process.env.APP_URL || 'http://localhost:3001'}/tenant/payments/success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${process.env.APP_URL || 'http://localhost:3001'}/tenant/payments/cancel`,
+            success_url: `${baseUrl}/tenant/payments/success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${baseUrl}/tenant/payments/cancel`,
             metadata: {
                 invoiceId: invoiceId.toString(),
                 tenantId: req.session.tenantId.toString(),
@@ -606,6 +602,8 @@ exports.payNow = async (req, res) => {
             console.log(`✅ Auto-created invoice for tenant: ${invoice._id}`);
         }
         
+        const baseUrl = getAppBaseUrl(req);
+
         // Create Stripe Checkout Session
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
@@ -623,8 +621,8 @@ exports.payNow = async (req, res) => {
                 }
             ],
             mode: 'payment',
-            success_url: `${process.env.APP_URL || 'http://localhost:3001'}/tenant/payments/success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${process.env.APP_URL || 'http://localhost:3001'}/tenant/payments/cancel`,
+            success_url: `${baseUrl}/tenant/payments/success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${baseUrl}/tenant/payments/cancel`,
             metadata: {
                 invoiceId: invoice._id.toString(),
                 applicationId: applicationId.toString(),
@@ -710,6 +708,8 @@ exports.payDeposit = async (req, res) => {
             await invoice.save();
         }
 
+        const baseUrl = getAppBaseUrl(req);
+
         // Create Stripe Checkout Session
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
@@ -727,8 +727,8 @@ exports.payDeposit = async (req, res) => {
                 }
             ],
             mode: 'payment',
-            success_url: `${process.env.APP_URL || 'http://localhost:3001'}/tenant/payments/success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${process.env.APP_URL || 'http://localhost:3001'}/tenant/payments/cancel`,
+            success_url: `${baseUrl}/tenant/payments/success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${baseUrl}/tenant/payments/cancel`,
             metadata: {
                 invoiceId: invoice._id.toString(),
                 tenantId: tenantId.toString(),
