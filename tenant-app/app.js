@@ -521,6 +521,20 @@ const tenantRoutes = require('./src/modules/tenant');
 // Mount tenant routes (all tenant features are under /tenant)
 app.use('/tenant', tenantRoutes);
 
+// Health check endpoint for monitoring
+app.get('/health', (req, res) => {
+    res.json({
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        environment: process.env.NODE_ENV,
+        smtp: {
+            configured: !!(process.env.SMTP_USER && process.env.SMTP_PASS),
+            host: process.env.SMTP_HOST
+        }
+    });
+});
+
 // Root route - redirect to tenant login
 app.get('/', (req, res) => {
     if (req.session && req.session.loggedIn && req.session.userType === 'tenant') {

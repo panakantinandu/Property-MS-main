@@ -1802,10 +1802,12 @@ exports.sendPasswordChangeOTP = async (req, res) => {
         tenant.passwordChangeOTPExpiry = otpExpiry;
         await tenant.save();
 
-        // Send OTP via email
+        console.log(`[OTP] Sending OTP to ${tenant.email} at ${new Date().toISOString()}`);
+
+        // Send OTP via email with timeout
         const notifyService = require('../../../../utils/notify');
         try {
-            await notifyService.sendMail({
+            const emailPromise = notifyService.sendMail({
                 to: tenant.email,
                 subject: 'Password Change OTP - LeaseHub',
                 html: `
@@ -1813,47 +1815,42 @@ exports.sendPasswordChangeOTP = async (req, res) => {
                         <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px 10px 0 0;">
                             <h1 style="color: white; margin: 0; text-align: center;">🔐 Password Change OTP</h1>
                         </div>
-                        
                         <div style="background: #f5f5f5; padding: 30px; border-radius: 0 0 10px 10px;">
                             <p>Hi <strong>${tenant.firstname}</strong>,</p>
-                            
-                            <p>You initiated a password change request on your LeaseHub Tenant Portal account.</p>
-                            
-                            <div style="background: white; padding: 20px; border-radius: 8px; text-align: center; margin: 25px 0;">
-                                <p style="color: #666; margin: 0 0 10px 0; font-size: 14px;">Your OTP is:</p>
-                                <h2 style="color: #667eea; font-size: 36px; letter-spacing: 8px; margin: 10px 0;">${otp}</h2>
-                                <p style="color: #999; margin: 10px 0 0 0; font-size: 12px;">Valid for 10 minutes</p>
-                            </div>
-                            
-                            <p style="color: #666;">Enter this OTP in your profile page to complete the password change.</p>
-                            
-                            <div style="background: #fff3cd; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #ffc107;">
-                                <p style="margin: 0; color: #856404;"><strong>⚠️ Security Notice:</strong> If you did not request a password change, please ignore this email and change your password immediately.</p>
-                            </div>
-                            
-                            <p style="color: #999; font-size: 12px; margin-top: 30px;">
-                                This is an automated email from LeaseHub Tenant Portal. Please do not reply to this email.
-                            </p>
+                            <p>Your OTP is: <strong style="font-size: 24px; color: #667eea;">${otp}</strong></p>
+                            <p style="color: #999; font-size: 12px;">Valid for 10 minutes</p>
+                            <p style="color: #856404;">⚠️ If you did not request this, ignore this email.</p>
                         </div>
                     </div>
                 `,
-                text: `Your password change OTP is: ${otp}. This OTP is valid for 10 minutes. If you did not request this, please ignore this email.`
+                text: `Your password change OTP is: ${otp}. Valid for 10 minutes.`
             });
 
+            // Wait max 15 seconds for email
+            const timeout = new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Email timeout')), 15000)
+            );
+
+            await Promise.race([emailPromise, timeout]);
+            
+            console.log(`[OTP] Email sent successfully to ${tenant.email}`);
             return res.json({ 
                 success: true, 
-                message: 'OTP sent to your email. Please check your inbox and enter the OTP to confirm password change.' 
+                message: 'OTP sent to your email. Check your inbox.' 
             });
         } catch (emailErr) {
-            console.error('Failed to send OTP email:', emailErr);
+            console.error('[OTP] Failed to send email:', emailErr.message);
             // Clear OTP if email fails
             tenant.passwordChangeOTP = undefined;
             tenant.passwordChangeOTPExpiry = undefined;
             await tenant.save();
-            return res.status(500).json({ success: false, message: 'Failed to send OTP. Please try again.' });
+            return res.status(500).json({ 
+                success: false, 
+                message: 'Failed to send OTP email. Please check your email settings or try again.' 
+            });
         }
     } catch (err) {
-        console.error('Send password OTP error:', err);
+        console.error('[OTP] Error:', err);
         res.status(500).json({ success: false, message: 'An error occurred. Please try again.' });
     }
 };

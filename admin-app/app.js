@@ -218,7 +218,19 @@ app.get('/', (req, res) => {
 const adminRoutes = require('./src/modules/admin');
 
 app.use('/admin', adminRoutes);
-
+// Health check endpoint for monitoring
+app.get('/health', (req, res) => {
+    res.json({
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        environment: process.env.NODE_ENV,
+        smtp: {
+            configured: !!(process.env.SMTP_USER && process.env.SMTP_PASS),
+            host: process.env.SMTP_HOST
+        }
+    });
+});
 // ======================
 // SOCKET.IO (Real-time for admins)
 // ======================

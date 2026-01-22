@@ -10,6 +10,23 @@ const transporter = nodemailer.createTransport({
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS
+  },
+  pool: true, // Use pooled connections for better performance
+  maxConnections: 5,
+  maxMessages: 100,
+  rateDelta: 1000,
+  rateLimit: 5,
+  connectionTimeout: 10000, // 10 seconds
+  greetingTimeout: 5000,
+  socketTimeout: 15000 // 15 seconds
+});
+
+// Verify SMTP connection on startup (optional, helps catch config errors early)
+transporter.verify(function(error, success) {
+  if (error) {
+    logger.error('SMTP configuration error:', error);
+  } else {
+    logger.info('SMTP server is ready to send emails');
   }
 });
 
@@ -26,7 +43,16 @@ async function sendMail({ to, subject, text, html }) {
     html
   };
   try {
-    const info = await transporter.sendMail(mail);
+    // Add timeout wrapper
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Email send timeout after 20 seconds')), 20000)
+    );
+    
+    const info = await Promise.race([
+      transporter.sendMail(mail),
+      timeoutPromise
+    ]);
+    
     logger.info(`Email sent to ${to}: ${info && info.messageId}`);
     return info;
   } catch (err) {
