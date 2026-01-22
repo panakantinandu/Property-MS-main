@@ -169,6 +169,7 @@ git clone https://github.com/panakantinandu/Property-MS-main.git
 cd Property-MS-main
 npm install
 cp .env.example .env
+```
 Environment Variables
 env
 MONGO_URI=
