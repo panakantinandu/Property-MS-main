@@ -1,6 +1,13 @@
 const nodemailer = require('nodemailer');
 const logger = require('./logger');
 
+// Optional HTTPS fallback (avoids SMTP port blocks on some hosts like Render)
+const sgMail = process.env.SENDGRID_API_KEY ? require('@sendgrid/mail') : null;
+if (sgMail) {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  logger.info('SendGrid fallback enabled (HTTPS port 443)');
+}
+
 // expects environment variables for SMTP configuration
 // SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, EMAIL_FROM
 const transporter = nodemailer.createTransport({
@@ -29,6 +36,18 @@ transporter.verify(function(error, success) {
     logger.info('SMTP server is ready to send emails');
   }
 });
+
+function shouldFallbackToSendGrid(err) {
+  if (!sgMail) return false;
+  if (!err) return false;
+  return (
+    err.code === 'ETIMEDOUT' ||
+    err.code === 'ECONNECTION' ||
+    err.code === 'ECONNRESET' ||
+    err.command === 'CONN' ||
+    /timeout/i.test(err.message || '')
+  );
+}
 
 async function sendMail({ to, subject, text, html }) {
   console.log('[NOTIFY] sendMail called for:', to);
@@ -74,6 +93,32 @@ async function sendMail({ to, subject, text, html }) {
     console.timeEnd('[NOTIFY] Email Send Duration');
     logger.error('Error sending email', err);
     console.error('[NOTIFY] ❌ Email error:', err.message);
+
+    if (shouldFallbackToSendGrid(err)) {
+      try {
+        console.log('[NOTIFY] Switching to SendGrid fallback over HTTPS (port 443)...');
+        const sgMsg = {
+          to,
+          from: process.env.EMAIL_FROM || process.env.SMTP_USER,
+          subject,
+          text,
+          html
+        };
+
+        const start = Date.now();
+        const [sgRes] = await sgMail.send(sgMsg);
+        const duration = ((Date.now() - start) / 1000).toFixed(3);
+        const sgId = sgRes?.headers?.['x-message-id'] || sgRes?.headers?.['x-message-id'] || sgRes?.headers?.['X-Message-Id'];
+        logger.info(`SendGrid email sent to ${to}: ${sgId || 'sendgrid'}`);
+        console.log(`[NOTIFY] ✅ SendGrid email sent in ${duration}s, Status: ${sgRes?.statusCode}`);
+        return { messageId: sgId || 'sendgrid', provider: 'sendgrid', statusCode: sgRes?.statusCode };
+      } catch (sgErr) {
+        logger.error('SendGrid fallback failed', sgErr);
+        console.error('[NOTIFY] ❌ SendGrid fallback error:', sgErr.message);
+        throw sgErr;
+      }
+    }
+
     throw err;
   }
 }

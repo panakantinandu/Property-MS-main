@@ -8,6 +8,7 @@ const Invoice = require('../../../../shared/models').Invoice;
 const Notification = require('../../../../shared/models').Notification;
 const { createAuditLog } = require('../../../../shared/services/auditService');
 const bcrypt = require('bcryptjs');
+const emailService = require('../../../../utils/emailService');
 
 // Login
 exports.login = async (req, res) => {
@@ -1810,32 +1811,38 @@ exports.sendPasswordChangeOTP = async (req, res) => {
 
         console.log(`[OTP] Sending OTP to ${tenant.email} at ${new Date().toISOString()}`);
 
-        // Send OTP via email with timeout
-        const notifyService = require('../../../../utils/notify');
-        
+        // Send OTP via email (using Resend with fallback to SMTP)
         try {
-            console.log('[OTP] Calling sendMail...');
+            console.log('[OTP] Calling email service...');
             
-            await notifyService.sendMail({
-                to: tenant.email,
-                subject: 'Password Change OTP - LeaseHub',
-                html: `
-                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px 10px 0 0;">
-                            <h1 style="color: white; margin: 0; text-align: center;">🔐 Password Change OTP</h1>
+            if (emailService.isResendAvailable()) {
+                // Try Resend first (HTTPS port 443 - no SMTP blocking)
+                await emailService.sendPasswordChangeOtpEmail(tenant.email, otp, tenant.firstname);
+                console.log(`[OTP] ✅ [RESEND] Password change OTP sent to ${tenant.email}`);
+            } else {
+                // Fallback to SMTP (Gmail)
+                const notifyService = require('../../../../utils/notify');
+                await notifyService.sendMail({
+                    to: tenant.email,
+                    subject: 'Password Change OTP - LeaseHub',
+                    html: `
+                        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px 10px 0 0;">
+                                <h1 style="color: white; margin: 0; text-align: center;">🔐 Password Change OTP</h1>
+                            </div>
+                            <div style="background: #f5f5f5; padding: 30px; border-radius: 0 0 10px 10px;">
+                                <p>Hi <strong>${tenant.firstname}</strong>,</p>
+                                <p>Your OTP is: <strong style="font-size: 24px; color: #667eea;">${otp}</strong></p>
+                                <p style="color: #999; font-size: 12px;">Valid for 10 minutes</p>
+                                <p style="color: #856404;">⚠️ If you did not request this, ignore this email.</p>
+                            </div>
                         </div>
-                        <div style="background: #f5f5f5; padding: 30px; border-radius: 0 0 10px 10px;">
-                            <p>Hi <strong>${tenant.firstname}</strong>,</p>
-                            <p>Your OTP is: <strong style="font-size: 24px; color: #667eea;">${otp}</strong></p>
-                            <p style="color: #999; font-size: 12px;">Valid for 10 minutes</p>
-                            <p style="color: #856404;">⚠️ If you did not request this, ignore this email.</p>
-                        </div>
-                    </div>
-                `,
-                text: `Your password change OTP is: ${otp}. Valid for 10 minutes.`
-            });
+                    `,
+                    text: `Your password change OTP is: ${otp}. Valid for 10 minutes.`
+                });
+                console.log(`[OTP] ✅ [SMTP] Password change OTP sent to ${tenant.email}`);
+            }
             
-            console.log(`[OTP] ✅ Email sent successfully to ${tenant.email}`);
             return res.json({ 
                 success: true, 
                 message: 'OTP sent to your email. Check your inbox.' 
@@ -2097,44 +2104,55 @@ exports.sendResetOTP = async (req, res) => {
         tenant.resetOTPExpiry = otpExpiry;
         await tenant.save();
 
-        // Send OTP via email
-        const notifyService = require('../../../../utils/notify');
-        await notifyService.sendMail({
-            to: tenant.email,
-            subject: 'Password Reset OTP - LeaseHub',
-            html: `
-                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px 10px 0 0;">
-                        <h1 style="color: white; margin: 0; text-align: center;">🔐 Password Reset OTP</h1>
-                    </div>
-                    
-                    <div style="background: #f5f5f5; padding: 30px; border-radius: 0 0 10px 10px;">
-                        <p>Hi <strong>${tenant.firstname}</strong>,</p>
-                        
-                        <p>You requested to reset your password for your LeaseHub Tenant Portal account.</p>
-                        
-                        <div style="background: white; padding: 20px; border-radius: 8px; text-align: center; margin: 25px 0;">
-                            <p style="color: #666; margin: 0 0 10px 0; font-size: 14px;">Your OTP is:</p>
-                            <h2 style="color: #667eea; font-size: 36px; letter-spacing: 8px; margin: 10px 0;">${otp}</h2>
-                            <p style="color: #999; margin: 10px 0 0 0; font-size: 12px;">Valid for 10 minutes</p>
+        // Send OTP via email (using Resend with fallback to SMTP)
+        try {
+            if (emailService.isResendAvailable()) {
+                // Try Resend first (HTTPS port 443 - no SMTP blocking)
+                await emailService.sendResetOtpEmail(tenant.email, otp, tenant.firstname);
+                console.log(`✅ [RESEND] Password reset OTP sent to ${tenant.email}`);
+            } else {
+                // Fallback to SMTP (Gmail)
+                const notifyService = require('../../../../utils/notify');
+                await notifyService.sendMail({
+                    to: tenant.email,
+                    subject: 'Password Reset OTP - LeaseHub',
+                    html: `
+                        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px 10px 0 0;">
+                                <h1 style="color: white; margin: 0; text-align: center;">🔐 Password Reset OTP</h1>
+                            </div>
+                            
+                            <div style="background: #f5f5f5; padding: 30px; border-radius: 0 0 10px 10px;">
+                                <p>Hi <strong>${tenant.firstname}</strong>,</p>
+                                
+                                <p>You requested to reset your password for your LeaseHub Tenant Portal account.</p>
+                                
+                                <div style="background: white; padding: 20px; border-radius: 8px; text-align: center; margin: 25px 0;">
+                                    <p style="color: #666; margin: 0 0 10px 0; font-size: 14px;">Your OTP is:</p>
+                                    <h2 style="color: #667eea; font-size: 36px; letter-spacing: 8px; margin: 10px 0;">${otp}</h2>
+                                    <p style="color: #999; margin: 10px 0 0 0; font-size: 12px;">Valid for 10 minutes</p>
+                                </div>
+                                
+                                <p style="color: #666;">Enter this OTP on the password reset page to create a new password.</p>
+                                
+                                <div style="background: #fff3cd; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #ffc107;">
+                                    <p style="margin: 0; color: #856404;"><strong>⚠️ Security Notice:</strong> If you did not request a password reset, please ignore this email and ensure your account is secure.</p>
+                                </div>
+                                
+                                <p style="color: #999; font-size: 12px; margin-top: 30px;">
+                                    This is an automated email from LeaseHub Tenant Portal. Please do not reply to this email.
+                                </p>
+                            </div>
                         </div>
-                        
-                        <p style="color: #666;">Enter this OTP on the password reset page to create a new password.</p>
-                        
-                        <div style="background: #fff3cd; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #ffc107;">
-                            <p style="margin: 0; color: #856404;"><strong>⚠️ Security Notice:</strong> If you did not request a password reset, please ignore this email and ensure your account is secure.</p>
-                        </div>
-                        
-                        <p style="color: #999; font-size: 12px; margin-top: 30px;">
-                            This is an automated email from LeaseHub Tenant Portal. Please do not reply to this email.
-                        </p>
-                    </div>
-                </div>
-            `,
-            text: `Your password reset OTP is: ${otp}. This OTP is valid for 10 minutes. If you did not request this, please ignore this email.`
-        });
-
-        console.log(`✅ Password reset OTP sent to ${tenant.email}`);
+                    `,
+                    text: `Your password reset OTP is: ${otp}. This OTP is valid for 10 minutes. If you did not request this, please ignore this email.`
+                });
+                console.log(`✅ [SMTP] Password reset OTP sent to ${tenant.email}`);
+            }
+        } catch (emailError) {
+            console.error('Failed to send password reset OTP:', emailError);
+            // Still redirect with success to prevent email enumeration
+        }
 
         req.session.forgotPasswordSuccess = 'OTP sent successfully! Please check your email inbox for the password reset OTP.';
         res.redirect('/tenant/forgot-password');
