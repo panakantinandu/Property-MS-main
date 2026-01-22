@@ -28,10 +28,28 @@ router.get('/tenants/:id/edit', requireAdmin(), controller.editTenantForm);
 router.post('/tenants/:id', requireAdmin(), controller.updateTenant);
 router.get('/properties', requireAdmin(), controller.properties);
 router.get('/properties/add', requireAdmin(), controller.addPropertyForm);
-router.post('/properties/add', requireAdmin(), controller.addProperty);
+router.post('/properties/add', requireAdmin(), (req, res, next) => {
+    const upload = req.app.locals.upload;
+    upload.array('propertyImages', 10)(req, res, (err) => {
+        if (err) {
+            req.session.error = err.message || 'Error uploading images';
+            return res.redirect('/admin/properties/add');
+        }
+        next();
+    });
+}, controller.addProperty);
 router.get('/properties/:id', requireAdmin(), controller.viewProperty);
 router.get('/properties/:id/edit', requireAdmin(), controller.editPropertyForm);
-router.post('/properties/:id', requireAdmin(), controller.updateProperty);
+router.post('/properties/:id', requireAdmin(), (req, res, next) => {
+    const upload = req.app.locals.upload;
+    upload.array('propertyImages', 10)(req, res, (err) => {
+        if (err) {
+            req.session.error = err.message || 'Error uploading images';
+            return res.redirect('/admin/properties/' + req.params.id + '/edit');
+        }
+        next();
+    });
+}, controller.updateProperty);
 router.get('/payments', requireAdmin(), controller.payments);
 router.get('/rent/overdue', requireAdmin(), controller.overdueRent);
 router.get('/invoices/create', requireAdmin(), controller.createInvoiceForm);

@@ -55,7 +55,7 @@
             </div>
             {{/if}}
 
-            <form action="/admin/properties/add" method="POST">
+            <form action="/admin/properties/add" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="_csrf" value="{{csrfToken}}">
                 <div class="form-section">
                     <h5><i class="fas fa-info-circle"></i> Basic Information</h5>
@@ -224,6 +224,16 @@
                     </div>
                 </div>
 
+                <div class="form-section">
+                    <h5><i class="fas fa-images"></i> Property Photos</h5>
+                    <div class="form-group">
+                        <label>Upload Photos (Max 10 images, 5MB each)</label>
+                        <input type="file" class="form-control-file" name="propertyImages" multiple accept="image/*" id="propertyImages">
+                        <small class="form-text text-muted">Supported formats: JPG, PNG, GIF, WEBP. First image will be the primary photo.</small>
+                    </div>
+                    <div id="imagePreview" class="row mt-3"></div>
+                </div>
+
                 <div class="text-center mt-4">
                     <a href="/admin/properties" class="btn btn-secondary px-4 mr-2">
                         <i class="fas fa-arrow-left"></i> Cancel
@@ -258,6 +268,42 @@
                     bookingDepositInput.value = Math.round(totalUpfront * 0.2);
                 }
             }
+        });
+
+        // Image preview functionality
+        document.getElementById('propertyImages').addEventListener('change', function(e) {
+            const preview = document.getElementById('imagePreview');
+            preview.innerHTML = '';
+            const files = e.target.files;
+            
+            if (files.length > 10) {
+                alert('Maximum 10 images allowed');
+                this.value = '';
+                return;
+            }
+            
+            Array.from(files).forEach((file, index) => {
+                if (file.size > 5 * 1024 * 1024) {
+                    alert(`File ${file.name} is too large. Max size is 5MB`);
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const col = document.createElement('div');
+                    col.className = 'col-md-3 mb-3';
+                    col.innerHTML = `
+                        <div class="card">
+                            <img src="${e.target.result}" class="card-img-top" style="height: 150px; object-fit: cover;">
+                            <div class="card-body p-2 text-center">
+                                <small class="text-muted">${index === 0 ? 'Primary' : 'Photo ' + (index + 1)}</small>
+                            </div>
+                        </div>
+                    `;
+                    preview.appendChild(col);
+                };
+                reader.readAsDataURL(file);
+            });
         });
     </script>
 </body>

@@ -587,6 +587,20 @@ exports.updateProperty = async (req, res) => {
             status: property.status
         };
 
+        // Handle existing images
+        let existingImages = [];
+        if (req.body.existingImages) {
+            existingImages = Array.isArray(req.body.existingImages) 
+                ? req.body.existingImages 
+                : [req.body.existingImages];
+        }
+
+        // Handle newly uploaded images
+        const newImages = req.files ? req.files.map(file => file.filename) : [];
+
+        // Combine existing and new images
+        const allImages = [...existingImages, ...newImages];
+
         property.propertyname = req.body.propertyname;
         property.propertyaddress = req.body.propertyaddress;
         property.city = req.body.city;
@@ -596,6 +610,7 @@ exports.updateProperty = async (req, res) => {
         property.bookingDeposit = Number(req.body.bookingDeposit) || property.bookingDeposit;
         property.deposit = Number(req.body.deposit) || property.deposit;
         property.status = req.body.status || property.status;
+        property.images = allImages;
 
         await property.save();
 
@@ -765,6 +780,9 @@ exports.addProperty = async (req, res) => {
             bookingDeposit = totalUpfront > 0 ? Math.round(totalUpfront * 0.2) : 0;
         }
 
+        // Handle uploaded images
+        const images = req.files ? req.files.map(file => file.filename) : [];
+
         const propertyData = {
             propertyname: req.body.propertyname,
             propertytype: req.body.propertytype,
@@ -786,6 +804,7 @@ exports.addProperty = async (req, res) => {
             parking: req.body.parking,
             amenities: req.body.amenities ? req.body.amenities.split(',').map(a => a.trim()) : [],
             description: req.body.description,
+            images: images,
             isActive: true,
             isDeleted: false
         };

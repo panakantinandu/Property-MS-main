@@ -12,6 +12,7 @@ const { Server } = require('socket.io');
 const morgan = require('morgan');
 const crypto = require('crypto');
 const csurf = require('csurf');
+const multer = require('multer');
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 
 // Shared imports
@@ -47,6 +48,37 @@ app.use((req, res, next) => {
 });
 
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Multer configuration for property image uploads
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.join(__dirname, 'public', 'uploads', 'properties'));
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, 'property-' + uniqueSuffix + path.extname(file.originalname));
+    }
+});
+
+const fileFilter = (req, file, cb) => {
+    const allowedTypes = /jpeg|jpg|png|gif|webp/;
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = allowedTypes.test(file.mimetype);
+    if (extname && mimetype) {
+        cb(null, true);
+    } else {
+        cb(new Error('Only image files (jpeg, jpg, png, gif, webp) are allowed'));
+    }
+};
+
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    fileFilter: fileFilter
+});
+
+// Export upload middleware for routes
+app.locals.upload = upload;
 
 // CSP nonce for inline scripts
 app.use((req, res, next) => {
