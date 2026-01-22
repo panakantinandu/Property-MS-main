@@ -1,303 +1,304 @@
-# LeaseHub – Smart Property & Tenant Management Platform
+🚀 LeaseHub — Production-Ready Property Management SaaS
 
-## 1. Project Title
+LeaseHub is a production-oriented, full-stack SaaS platform that automates the complete landlord–tenant lifecycle, including property listings, lease applications, booking deposits, recurring rent payments, late fees, cancellations, audit logs, and admin reporting.
 
-**LeaseHub – Smart Property & Tenant Management Platform**
+This project is designed to demonstrate real-world software engineering, not just UI or CRUD operations.
 
-A full-stack, production-oriented property management system providing separate tenant and admin experiences, built with Node.js, Express, MongoDB, and Stripe.
+🔗 Live AdminDemo: https://leasehub-admin.onrender.com
+🔗 Live TenantDemo: https://leasehub-tenant.onrender.com
 
----
+🔗 GitHub Repository: https://github.com/panakantinandu/Property-MS-main
 
-## 2. Problem Statement
+🧠 Why LeaseHub?
 
-Traditional lease and property management is fragmented and manual:
-- Spreadsheets, paper contracts, and email threads lead to inconsistent data and human error.
-- Tenant onboarding is slow, with no clear application status or centralized document flow.
-- Rent tracking is manual, making it hard to see who is paid, overdue, or at risk.
-- Payment reminders depend on people remembering to send emails or messages.
-- There is little or no audit trail for critical actions such as approvals, cancellations, or refunds.
+Traditional property management relies on spreadsheets, manual reminders, and inconsistent payment tracking. This leads to:
 
-Existing rental apps often fall short because they:
-- Rely on **manual tracking** of applications, deposits, and rents.
-- Lack **automation** for recurring invoices, late fees, and notifications.
-- Provide poor **tenant–admin transparency** on application status, invoices, and payments.
-- Struggle with **payment delays** and limited payment options.
-- Do not offer a reliable **audit trail** for compliance, support, and analytics.
+Missed or late rent payments
 
-LeaseHub is designed to address these gaps as a realistic SaaS-style backend and UI.
+Manual follow-ups by landlords
 
----
+No audit trail for disputes
 
-## 3. Solution Overview
+Poor transparency for tenants
 
-LeaseHub provides an end-to-end workflow for managing properties, tenants, leases, and payments.
+LeaseHub solves these problems by enforcing structured workflows, automated billing, and secure payment handling — similar to real-world rental platforms.
 
-Key solution pillars:
+✨ Key Capabilities
+🏠 Lease & Property Management
 
-- **Property discovery** – Tenants can browse available properties, view details, and understand availability before applying.
-- **Lease application workflow** – Structured application process with status tracking (pending, approved, expired/cancelled).
-- **Booking deposit system** – Securely capture booking deposits to reserve properties before full onboarding.
-- **Automated monthly rent** – Monthly invoices are generated automatically via background jobs, reducing manual work.
-- **Late fee handling** – Overdue invoices automatically accrue late fees based on business rules, with clear reporting.
-- **Tenant notifications** – Email and in-app notifications keep tenants informed about invoices, payments, and maintenance.
-- **Admin reporting** – Executive dashboards and reports help admins monitor occupancy, revenue, and risk in real time.
+Property listings with availability status
 
-The result is a more reliable, auditable, and scalable rental management workflow suitable for real-world operations.
+Tenant lease applications
 
----
+Approval & reservation workflow
 
-## 4. Key Features
+Automatic property release on expiry or cancellation
 
-### Tenant Features
+💳 Payments & Billing
 
-- **Browse available properties** – View property catalog with availability and key details.
-- **Apply for lease** – Submit structured applications through the tenant portal.
-- **Pay booking deposit** – Reserve properties by paying booking deposits online.
-- **Pay monthly rent via Stripe** – Securely pay recurring rent invoices using Stripe.
-- **View invoices & payment history** – Transparent list of all invoices, payments, and outstanding balances.
-- **Maintenance requests** – Submit and track maintenance tickets from the tenant portal.
-- **Automated reminders** – Receive reminders for upcoming due dates, overdue rent, and important updates.
+Stripe Checkout integration
 
-### Admin Features
+Booking deposit handling
 
-- **Property management** – Create, update, and manage properties, units, and availability.
-- **Application approvals** – Review and approve or reject tenant applications with proper status tracking.
-- **Tenant assignment** – Link approved tenants to properties and activate leases.
-- **Automated invoicing** – Generate monthly rent invoices and late fee entries via scheduled jobs.
-- **Rent tracking** – Monitor who is current, overdue, and at risk, with an overdue rent view.
-- **Late fee enforcement** – Apply and track late fees consistently across the portfolio.
-- **Business reports dashboard** – Admin reports for occupancy, revenue, outstanding rent, deposits, and late fees.
-- **Audit logs** – Capture critical admin actions for traceability and compliance.
+Automated monthly rent invoices
 
----
+Late fee enforcement
 
-## 5. Security Measures
+Webhook-verified payment updates
 
-LeaseHub is built with security best practices appropriate for a multi-tenant SaaS-style application.
+Ledger-based accounting model
 
-- **Role-based access control**
-  - Clear separation between **Admin** and **Tenant** roles.
-  - Admin-only access to management and reporting endpoints.
+⏱️ Automation
 
-- **JWT authentication**
-  - JSON Web Tokens used to protect API routes and sessions.
-  - Tokens signed with a strong secret and validated on each request.
+Cron-based invoice generation
 
-- **Password hashing**
-  - User passwords are never stored in plain text.
-  - Strong hashing (e.g., bcrypt) is used before persistence.
+Rent reminders before due date
 
-- **Environment variable protection**
-  - Secrets such as database URLs, JWT secrets, and Stripe keys are never hard-coded.
-  - All sensitive configuration is loaded from environment variables.
+Auto-cancellation on non-payment
 
-- **Stripe secure payment flow**
-  - Payments are processed via Stripe using server-side APIs and webhooks.
-  - Card data never touches the LeaseHub servers; Stripe handles PCI-compliant processing.
+Time-based application expiry
 
-- **No sensitive data stored in frontend**
-  - Frontend templates receive only the data they need; secrets are not exposed.
-  - JWTs and session identifiers are handled securely.
+🔐 Security & Integrity
 
-- **Audit logs for critical actions**
-  - Critical events (e.g., approvals, cancellations, payment events) are logged for troubleshooting and compliance.
+JWT-based authentication
 
-- **Protection against common risks**
-  - **Unauthorized access** – Protected routes and role checks.
-  - **Data tampering** – Validated requests and server-side checks for entity ownership.
-  - **Payment fraud** – Server-side verification of Stripe events via webhook secrets and idempotent flows.
+Role-based access control (Admin / Tenant)
 
----
+Password hashing with bcrypt
 
-## 6. Tech Stack
+Secure environment variable handling
 
-- **Runtime:** Node.js (>=14)
-- **Framework:** Express.js
-- **Database:** MongoDB Atlas (cloud-hosted MongoDB)
-- **Payments:** Stripe Payments (server-side integration + webhooks)
-- **Templating:** Handlebars (HBS) for server-side rendered views
-- **UI Framework:** Bootstrap 4 for responsive layouts
-- **Authentication & Security:** JWT, bcrypt, helmet, express-rate-limit, express-mongo-sanitize, csurf
-- **Real-time:** Socket.IO for notifications and live updates
-- **Email:** Nodemailer for transactional emails
+Full audit logs for sensitive actions
 
-Repository layout (high level):
-- **Root:** Shared configuration, background jobs, and scripts
-- **`admin-app/`** – Admin console (Express + HBS)
-- **`tenant-app/`** – Tenant portal (Express + HBS)
-- **`shared/`** – Shared models, config, middleware, and services
-- **`utils/`** – Cross-cutting utilities (JWT, ledger, PDFs, rent logic)
-- **`jobs/`** – Cron-style jobs (monthly invoice generation, reminders, late fees)
+📊 Admin Insights
 
----
+Property, tenant, and application reports
 
-## 7. Deployment
+Outstanding dues & overdue tenants
 
-LeaseHub is designed to be deployed as a modern cloud-hosted Node.js application.
+Financial summaries (paid vs due)
 
-- **Source control:** GitHub (monorepo containing admin and tenant apps).
-- **Application hosting:** Render (or similar Node.js hosting platform).
-  - Admin and tenant apps can be deployed as separate services or a single process, depending on environment.
-- **Database:** MongoDB Atlas for production-grade, managed MongoDB.
-- **Process manager:** Platform process configuration (e.g., Render, Heroku-like `Procfile`).
-- **Environment variables:** Managed through the deployment platform (Render dashboard, GitHub secrets, etc.).
+🧪 Demo Credentials
 
-Typical deployment flow:
-1. Push changes to GitHub.
-2. Render (or equivalent) pulls from the main branch and runs the install/start commands.
-3. Environment variables are injected from the platform configuration.
-4. Admin and tenant apps start and connect to MongoDB Atlas and Stripe.
+Use the following credentials to explore the live demo:
 
----
+Admin Login
+Email: nan
+Password: nan427
 
-## 8. Environment Variables
+Tenant Login
+Email: email@email.com
+Password: email@098
 
-The following environment variables are required for a production-like setup (values are **not** committed to the repo):
 
-- `MONGO_URI` – MongoDB connection string (MongoDB Atlas recommended).
-- `JWT_SECRET` – Secret key used to sign and verify JWTs.
-- `STRIPE_SECRET_KEY` – Secret API key for Stripe server-side calls.
-- `STRIPE_WEBHOOK_SECRET` – Webhook signing secret for verifying Stripe events.
-- `EMAIL_HOST` – SMTP host for transactional emails.
-- `EMAIL_PORT` – SMTP port for transactional emails.
-- `EMAIL_USER` – SMTP username.
-- `EMAIL_PASS` – SMTP password.
+⚠️ Payments use Stripe Test Mode — no real money is charged.
 
-Additional environment variables (depending on your setup) may include:
+🛠️ Tech Stack
+Frontend
 
-- `NODE_ENV` – `development` or `production`.
-- `SESSION_SECRET` – Secret for Express sessions.
-- `TENANT_URL` – Public URL of the tenant portal.
-- `ADMIN_URL` – Public URL of the admin console.
+Handlebars (HBS)
 
----
+Bootstrap (responsive UI)
 
-## 9. How to Run Locally
+Backend
 
-### Prerequisites
+Node.js
 
-- Node.js >= 14
-- npm >= 6
-- A MongoDB instance (local or MongoDB Atlas)
-- A Stripe account and test keys
+Express.js
 
-### Steps
+REST APIs
 
-1. **Clone the repository**
+Database
 
-   ```bash
-   git clone https://github.com/your-username/leasehub.git
-   cd leasehub
-   ```
+MongoDB Atlas
 
-2. **Install dependencies (root + apps)**
+Payments
 
-   From the project root:
+Stripe Checkout
 
-   ```bash
-   npm run setup
-   ```
+Stripe Webhooks
 
-   This installs dependencies in:
-   - Root (shared packages, jobs, utilities)
-   - `tenant-app/`
-   - `admin-app/`
+Security
 
-3. **Create and configure your `.env` file**
+JWT Authentication
 
-   In the project root, create a `.env` file (you can use `.env.example` as a reference if present) and set at least:
+RBAC
 
-   ```bash
-   MONGO_URI=your-mongodb-connection-string
-   JWT_SECRET=some-strong-secret
-   STRIPE_SECRET_KEY=your-stripe-secret-key
-   STRIPE_WEBHOOK_SECRET=your-stripe-webhook-secret
-   EMAIL_HOST=your-smtp-host
-   EMAIL_PORT=your-smtp-port
-   EMAIL_USER=your-smtp-user
-   EMAIL_PASS=your-smtp-password
-   NODE_ENV=development
-   ```
+bcrypt
 
-4. **Run the apps in development mode**
+Deployment
 
-   From the project root:
+Render (app hosting)
 
-   ```bash
-   npm run dev:all
-   ```
+MongoDB Atlas (cloud DB)
 
-   This will run both:
-   - Tenant app (`tenant-app/app.js`)
-   - Admin app (`admin-app/app.js`)
+🧱 System Design Highlights
 
-5. **Access the applications**
+LeaseHub is designed around real accounting and workflow principles:
 
-   Default ports may differ depending on configuration, but typically:
-   - Tenant portal: `http://localhost:3000` (or configured tenant port)
-   - Admin console: `http://localhost:3001` (or configured admin port)
+Invoices represent what a tenant owes
 
-   Check each app's `app.js` or configuration to confirm ports.
+Payments represent what a tenant paid
 
-6. **Production-style start**
+Ledger entries maintain financial traceability
 
-   To simulate a production-style run from the root:
+Webhooks ensure payment integrity
 
-   ```bash
-   npm start
-   ```
+Cron jobs enforce time-based business rules
 
-   Ensure `NODE_ENV=production` and all required environment variables are set.
+This separation prevents data inconsistency and mirrors production financial systems.
 
----
+📂 Project Structure
+Property-MS-main/
+├── app.js
+├── controllers/
+├── models/
+├── routes/
+├── middleware/
+├── views/
+├── public/
+├── scripts/        # cron jobs & background tasks
+├── README.md
+├── LICENSE
+├── CONTRIBUTING.md
+└── .env.example
 
-## 10. Real-World Use Case
+🚀 Local Setup
+Prerequisites
 
-### For Landlords / Property Managers
+Node.js (v16+)
 
-- Centralize all properties, tenants, applications, and financials in one system.
-- Automate monthly rent invoices and late fee calculations instead of relying on spreadsheets.
-- Gain clear visibility into occupancy, delinquency, and revenue trends through the admin dashboard.
-- Reduce disputes through a transparent history of invoices, payments, and audit logs.
-- Improve operations with structured maintenance workflows and tenant communications.
+MongoDB Atlas account
 
-### For Tenants
+Stripe account
 
-- Discover available properties and apply without visiting an office.
-- Pay booking deposits and monthly rent online using secure Stripe payments.
-- See a clear, time-stamped history of invoices, payments, and outstanding balances.
-- Receive automated reminders for due dates and important updates.
-- Submit maintenance requests and track their resolution without phone calls or emails.
+Installation
+git clone https://github.com/panakantinandu/Property-MS-main.git
+cd Property-MS-main
+npm install
+cp .env.example .env
 
-### Why This Is Better Than Traditional Systems
 
-- Replaces manual, error-prone processes with automated, traceable workflows.
-- Provides a unified view for admins and a self-service portal for tenants.
-- Scales from small portfolios to larger multi-property operations.
-- Designed with security, auditability, and real SaaS deployment patterns in mind.
+Update .env with your own values:
 
----
+MONGO_URI=
+JWT_SECRET=
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
+EMAIL_HOST=
+EMAIL_PORT=
+EMAIL_USER=
+EMAIL_PASS=
 
-## 11. Future Enhancements
 
-Planned and potential extensions to LeaseHub include:
+Run the app:
 
-- **Mobile app** – Native or cross-platform mobile apps for tenants and admins.
-- **Advanced analytics** – Portfolio analytics, churn prediction, and cohort-based reporting.
-- **AI rent prediction** – Use historical data and market trends to suggest optimal rent pricing.
-- **Multi-owner support** – Support multiple property owners with isolated reporting and permissions.
-- **Third-party integrations** – Integrations with accounting tools, CRM systems, and marketing platforms.
+npm start
 
----
 
-## Repository & Structure Notes
+App runs at: http://localhost:3000
 
-This repository has been structured to look and behave like a real startup backend/monorepo:
+👤 User Roles
+Admin
 
-- Clear separation between **tenant** and **admin** applications.
-- Shared models, config, middleware, and services in the `shared/` directory.
-- Background jobs for invoices, reminders, and late fees in `jobs/`.
-- Utilities in `utils/` (JWT helpers, ledger service, PDF generator, rent logic, logging, notifications).
-- Optional deep-dive documentation in files such as `TESTING-GUIDE.md` (manual QA flows) and `SECURITY-NOTES.md` (hardening details).
+Add & manage properties
 
-No extraneous runtime files or dead test/spec files are required for deployment, keeping the repository clean and recruiter-friendly while preserving all core functionality.
+Review applications
+
+Track rent & dues
+
+View reports & audit logs
+
+Tenant
+
+Browse available properties
+
+Apply for lease
+
+Pay deposit & monthly rent
+
+View invoices & payment history
+
+🔒 Security Considerations
+
+No secrets committed to the repository
+
+All sensitive keys managed via environment variables
+
+Stripe handles card data (PCI compliant)
+
+Audit logs provide accountability for admin actions
+
+🧾 Commercial Usage & Licensing
+
+This repository is source-available for learning and evaluation.
+
+❌ Not Allowed Without Permission
+
+Commercial use
+
+Reselling or redistributing
+
+Deploying for clients or organizations
+
+✅ Allowed
+
+Personal learning
+
+Portfolio demonstration
+
+Code review and study
+
+If you want to:
+
+Use LeaseHub commercially
+
+Deploy it for clients
+
+Build a SaaS on top of it
+
+📧 Contact for a commercial license:
+panakantinandu@gmail.com
+
+See LICENSE for full terms.
+
+🤝 Contributing
+
+Contributions are welcome for:
+
+Bug reports
+
+Feature suggestions
+
+Documentation improvements
+
+Please read CONTRIBUTING.md
+ before submitting changes.
+
+🎯 Why This Project Matters (For Recruiters)
+
+LeaseHub demonstrates:
+
+Real SaaS thinking
+
+Secure payment handling
+
+Automation & background jobs
+
+Clean separation of concerns
+
+Production deployment experience
+
+Business-driven system design
+
+This is not a tutorial project — it is a realistic simulation of a production system.
+
+📫 Contact
+
+📧 Email: panakantinandu@gmail.com
+
+🔗 LinkedIn: https://linkedin.com/in/nandu-panakanti-41839731a
+
+🔗 Portfolio: https://nandu-portfolio-three.vercel.app
+
+🔗 GitHub: https://github.com/panakantinandu
