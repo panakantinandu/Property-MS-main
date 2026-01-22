@@ -1773,6 +1773,91 @@ exports.profile = async (req, res) => {
     }
 };
 
+// Send OTP for password change
+exports.sendPasswordChangeOTP = async (req, res) => {
+    try {
+        const tenant = await Tenant.findById(req.session.tenantId);
+        if (!tenant) {
+            return res.status(401).json({ success: false, message: 'Not authenticated' });
+        }
+
+        const { currentPassword } = req.body;
+
+        if (!currentPassword) {
+            return res.status(400).json({ success: false, message: 'Current password is required' });
+        }
+
+        // Verify current password before sending OTP
+        const isMatch = await bcrypt.compare(currentPassword, tenant.tenantpassword);
+        if (!isMatch) {
+            return res.status(401).json({ success: false, message: 'Current password is incorrect' });
+        }
+
+        // Generate 6-digit OTP
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes from now
+
+        // Store OTP temporarily
+        tenant.passwordChangeOTP = otp;
+        tenant.passwordChangeOTPExpiry = otpExpiry;
+        await tenant.save();
+
+        // Send OTP via email
+        const notifyService = require('../../../../utils/notify');
+        try {
+            await notifyService.sendMail({
+                to: tenant.email,
+                subject: 'Password Change OTP - LeaseHub',
+                html: `
+                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px 10px 0 0;">
+                            <h1 style="color: white; margin: 0; text-align: center;">🔐 Password Change OTP</h1>
+                        </div>
+                        
+                        <div style="background: #f5f5f5; padding: 30px; border-radius: 0 0 10px 10px;">
+                            <p>Hi <strong>${tenant.firstname}</strong>,</p>
+                            
+                            <p>You initiated a password change request on your LeaseHub Tenant Portal account.</p>
+                            
+                            <div style="background: white; padding: 20px; border-radius: 8px; text-align: center; margin: 25px 0;">
+                                <p style="color: #666; margin: 0 0 10px 0; font-size: 14px;">Your OTP is:</p>
+                                <h2 style="color: #667eea; font-size: 36px; letter-spacing: 8px; margin: 10px 0;">${otp}</h2>
+                                <p style="color: #999; margin: 10px 0 0 0; font-size: 12px;">Valid for 10 minutes</p>
+                            </div>
+                            
+                            <p style="color: #666;">Enter this OTP in your profile page to complete the password change.</p>
+                            
+                            <div style="background: #fff3cd; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #ffc107;">
+                                <p style="margin: 0; color: #856404;"><strong>⚠️ Security Notice:</strong> If you did not request a password change, please ignore this email and change your password immediately.</p>
+                            </div>
+                            
+                            <p style="color: #999; font-size: 12px; margin-top: 30px;">
+                                This is an automated email from LeaseHub Tenant Portal. Please do not reply to this email.
+                            </p>
+                        </div>
+                    </div>
+                `,
+                text: `Your password change OTP is: ${otp}. This OTP is valid for 10 minutes. If you did not request this, please ignore this email.`
+            });
+
+            return res.json({ 
+                success: true, 
+                message: 'OTP sent to your email. Please check your inbox and enter the OTP to confirm password change.' 
+            });
+        } catch (emailErr) {
+            console.error('Failed to send OTP email:', emailErr);
+            // Clear OTP if email fails
+            tenant.passwordChangeOTP = undefined;
+            tenant.passwordChangeOTPExpiry = undefined;
+            await tenant.save();
+            return res.status(500).json({ success: false, message: 'Failed to send OTP. Please try again.' });
+        }
+    } catch (err) {
+        console.error('Send password OTP error:', err);
+        res.status(500).json({ success: false, message: 'An error occurred. Please try again.' });
+    }
+};
+
 // Update Profile
 exports.updateProfile = async (req, res) => {
     try {
@@ -1780,7 +1865,7 @@ exports.updateProfile = async (req, res) => {
             firstname, lastname, email, phone, dob, gender,
             occupation, companyName, currentAddress,
             emergencyContactName, emergencyContactPhone, emergencyContactRelation,
-            currentPassword, newPassword, confirmNewPassword
+            currentPassword, newPassword, confirmNewPassword, passwordOTP
         } = req.body;
 
         const tenant = await Tenant.findById(req.session.tenantId);
@@ -1828,22 +1913,76 @@ exports.updateProfile = async (req, res) => {
         }
 
         // Handle password change if requested
-        if (newPassword) {
-            // Verify current password
-            const isMatch = await bcrypt.compare(currentPassword, tenant.tenantpassword);
-            if (!isMatch) {
-                req.session.profileError = 'Current password is incorrect';
+        if (newPassword || confirmNewPassword || currentPassword) {
+            // Password validation regex: 8+ chars, 1 uppercase, 1 lowercase, 1 number, 1 special char
+            const passwordRule = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+
+            // If any password field is filled, all validation checks must pass
+            if (newPassword && !confirmNewPassword) {
+                req.session.profileError = 'Please confirm your new password';
                 return res.redirect('/tenant/profile');
             }
 
-            // Validate new password match
-            if (newPassword !== confirmNewPassword) {
-                req.session.profileError = 'New passwords do not match';
+            if (confirmNewPassword && !newPassword) {
+                req.session.profileError = 'Please enter your new password';
                 return res.redirect('/tenant/profile');
             }
 
-            // Hash and update password
-            tenant.tenantpassword = await bcrypt.hash(newPassword, 10);
+            if (newPassword && !currentPassword) {
+                req.session.profileError = 'Please enter your current password to change it';
+                return res.redirect('/tenant/profile');
+            }
+
+            // Verify current password before allowing change
+            if (currentPassword && newPassword) {
+                const isMatch = await bcrypt.compare(currentPassword, tenant.tenantpassword);
+                if (!isMatch) {
+                    req.session.profileError = 'Current password is incorrect';
+                    return res.redirect('/tenant/profile');
+                }
+
+                // Validate new password format
+                if (!passwordRule.test(newPassword)) {
+                    req.session.profileError = 'New password must be 8+ characters with 1 uppercase letter, 1 number, and 1 special character';
+                    return res.redirect('/tenant/profile');
+                }
+
+                // Validate new password match
+                if (newPassword !== confirmNewPassword) {
+                    req.session.profileError = 'New passwords do not match';
+                    return res.redirect('/tenant/profile');
+                }
+
+                // Check if OTP verification is needed (if password OTP exists)
+                if (tenant.passwordChangeOTP && tenant.passwordChangeOTPExpiry) {
+                    if (!passwordOTP) {
+                        req.session.profileError = 'OTP verification required for password change. Please check your email for the OTP.';
+                        return res.redirect('/tenant/profile');
+                    }
+
+                    // Verify OTP is not expired
+                    if (new Date() > tenant.passwordChangeOTPExpiry) {
+                        tenant.passwordChangeOTP = undefined;
+                        tenant.passwordChangeOTPExpiry = undefined;
+                        await tenant.save();
+                        req.session.profileError = 'OTP has expired. Please request a new one.';
+                        return res.redirect('/tenant/profile');
+                    }
+
+                    // Verify OTP matches
+                    if (tenant.passwordChangeOTP !== passwordOTP) {
+                        req.session.profileError = 'Invalid OTP. Please try again.';
+                        return res.redirect('/tenant/profile');
+                    }
+
+                    // OTP verified, clear it
+                    tenant.passwordChangeOTP = undefined;
+                    tenant.passwordChangeOTPExpiry = undefined;
+                }
+
+                // Hash and update password
+                tenant.tenantpassword = await bcrypt.hash(newPassword, 10);
+            }
         }
 
         await tenant.save();

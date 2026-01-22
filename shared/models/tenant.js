@@ -17,6 +17,8 @@ const tenantSchema = new mongoose.Schema({
     isDeleted: { type: Boolean, default: false },
     resetOTP: { type: String },
     resetOTPExpiry: { type: Date },
+    passwordChangeOTP: { type: String },
+    passwordChangeOTPExpiry: { type: Date },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Tenant', tenantSchema, 'tenants');

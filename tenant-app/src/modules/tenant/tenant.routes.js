@@ -38,6 +38,7 @@ router.post('/reset-password', controller.resetPassword);
 router.get('/dashboard', requireTenant(), controller.dashboard);
 router.get('/profile', requireTenant(), controller.profile);
 router.post('/profile/update', requireTenant(), controller.updateProfile);
+router.post('/profile/send-password-otp', requireTenant(), controller.sendPasswordChangeOTP);
 router.get('/payments', requireTenant(), controller.payments);
 router.get('/invoices', requireTenant(), controller.invoices);
 router.post('/invoices/:invoiceId/pay', requireTenant(), controller.initiatePayment);
