@@ -10,6 +10,14 @@ const { createAuditLog } = require('../../../../shared/services/auditService');
 const bcrypt = require('bcryptjs');
 const emailService = require('../../../../utils/emailService');
 
+// Derive the public app URL from env or the incoming request to avoid hard-coded ports
+const getAppBaseUrl = (req) => {
+    if (process.env.APP_URL) return process.env.APP_URL;
+    const proto = req.headers['x-forwarded-proto'] || req.protocol;
+    const host = req.headers['x-forwarded-host'] || req.get('host');
+    return `${proto}://${host}`;
+};
+
 // Login
 exports.login = async (req, res) => {
     const { email, password, tenantid } = req.body;
@@ -483,6 +491,12 @@ exports.initiatePayment = async (req, res) => {
         // success page can distinguish booking deposits from rent.
         const purpose = invoice.type === 'booking_deposit' ? 'booking_deposit' : 'rent';
 
+        const baseUrl = getAppBaseUrl(req);
+
+        const baseUrl = getAppBaseUrl(req);
+
+        const baseUrl = getAppBaseUrl(req);
+
         // Create Stripe Checkout Session
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
@@ -500,8 +514,8 @@ exports.initiatePayment = async (req, res) => {
                         },
                         unit_amount: Math.round(invoice.totalAmount * 100) // Convert to paise
                     },
-                    quantity: 1
-                }
+                        success_url: `${baseUrl}/tenant/payments/success?session_id={CHECKOUT_SESSION_ID}`,
+                        cancel_url: `${baseUrl}/tenant/payments/cancel`,
             ],
             mode: 'payment',
             success_url: `${process.env.APP_URL || 'http://localhost:3001'}/tenant/payments/success?session_id={CHECKOUT_SESSION_ID}`,
