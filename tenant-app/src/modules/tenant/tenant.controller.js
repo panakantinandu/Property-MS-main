@@ -1775,21 +1775,26 @@ exports.profile = async (req, res) => {
 
 // Send OTP for password change
 exports.sendPasswordChangeOTP = async (req, res) => {
+    console.log('[OTP] === START OTP REQUEST ===');
     try {
         const tenant = await Tenant.findById(req.session.tenantId);
         if (!tenant) {
+            console.log('[OTP] ERROR: Tenant not found');
             return res.status(401).json({ success: false, message: 'Not authenticated' });
         }
 
         const { currentPassword } = req.body;
+        console.log('[OTP] Request from tenant:', tenant.email);
 
         if (!currentPassword) {
+            console.log('[OTP] ERROR: No current password provided');
             return res.status(400).json({ success: false, message: 'Current password is required' });
         }
 
         // Verify current password before sending OTP
         const isMatch = await bcrypt.compare(currentPassword, tenant.tenantpassword);
         if (!isMatch) {
+            console.log('[OTP] ERROR: Current password incorrect');
             return res.status(401).json({ success: false, message: 'Current password is incorrect' });
         }
 
@@ -1801,13 +1806,17 @@ exports.sendPasswordChangeOTP = async (req, res) => {
         tenant.passwordChangeOTP = otp;
         tenant.passwordChangeOTPExpiry = otpExpiry;
         await tenant.save();
+        console.log('[OTP] OTP generated and saved:', otp);
 
         console.log(`[OTP] Sending OTP to ${tenant.email} at ${new Date().toISOString()}`);
 
         // Send OTP via email with timeout
         const notifyService = require('../../../../utils/notify');
+        
         try {
-            const emailPromise = notifyService.sendMail({
+            console.log('[OTP] Calling sendMail...');
+            
+            await notifyService.sendMail({
                 to: tenant.email,
                 subject: 'Password Change OTP - LeaseHub',
                 html: `
@@ -1825,33 +1834,30 @@ exports.sendPasswordChangeOTP = async (req, res) => {
                 `,
                 text: `Your password change OTP is: ${otp}. Valid for 10 minutes.`
             });
-
-            // Wait max 15 seconds for email
-            const timeout = new Promise((_, reject) => 
-                setTimeout(() => reject(new Error('Email timeout')), 15000)
-            );
-
-            await Promise.race([emailPromise, timeout]);
             
-            console.log(`[OTP] Email sent successfully to ${tenant.email}`);
+            console.log(`[OTP] ✅ Email sent successfully to ${tenant.email}`);
             return res.json({ 
                 success: true, 
                 message: 'OTP sent to your email. Check your inbox.' 
             });
         } catch (emailErr) {
-            console.error('[OTP] Failed to send email:', emailErr.message);
+            console.error('[OTP] ❌ Failed to send email:', emailErr);
+            console.error('[OTP] Error stack:', emailErr.stack);
+            
             // Clear OTP if email fails
             tenant.passwordChangeOTP = undefined;
             tenant.passwordChangeOTPExpiry = undefined;
             await tenant.save();
+            
             return res.status(500).json({ 
                 success: false, 
-                message: 'Failed to send OTP email. Please check your email settings or try again.' 
+                message: `Failed to send OTP: ${emailErr.message || 'Email service error'}` 
             });
         }
     } catch (err) {
-        console.error('[OTP] Error:', err);
-        res.status(500).json({ success: false, message: 'An error occurred. Please try again.' });
+        console.error('[OTP] ❌ Unexpected error:', err);
+        console.error('[OTP] Error stack:', err.stack);
+        res.status(500).json({ success: false, message: `Server error: ${err.message}` });
     }
 };
 
@@ -1947,6 +1953,12 @@ exports.updateProfile = async (req, res) => {
                 // Validate new password match
                 if (newPassword !== confirmNewPassword) {
                     req.session.profileError = 'New passwords do not match';
+                    return res.redirect('/tenant/profile');
+                }
+
+                // Check that new password is different from current password
+                if (newPassword === currentPassword) {
+                    req.session.profileError = 'New password must be different from your current password. Please choose a different password.';
                     return res.redirect('/tenant/profile');
                 }
 

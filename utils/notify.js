@@ -31,10 +31,19 @@ transporter.verify(function(error, success) {
 });
 
 async function sendMail({ to, subject, text, html }) {
+  console.log('[NOTIFY] sendMail called for:', to);
+  
   if (!to) {
     logger.warn('notify.sendMail called without `to` address');
     return;
   }
+  
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    const error = new Error('SMTP credentials not configured. Check SMTP_USER and SMTP_PASS environment variables.');
+    logger.error(error.message);
+    throw error;
+  }
+  
   const mail = {
     from: process.env.EMAIL_FROM || process.env.SMTP_USER,
     to,
@@ -42,7 +51,11 @@ async function sendMail({ to, subject, text, html }) {
     text,
     html
   };
+  
   try {
+    console.log('[NOTIFY] Attempting to send email via', process.env.SMTP_HOST);
+    console.time('[NOTIFY] Email Send Duration');
+    
     // Add timeout wrapper
     const timeoutPromise = new Promise((_, reject) => 
       setTimeout(() => reject(new Error('Email send timeout after 20 seconds')), 20000)
@@ -53,10 +66,14 @@ async function sendMail({ to, subject, text, html }) {
       timeoutPromise
     ]);
     
+    console.timeEnd('[NOTIFY] Email Send Duration');
     logger.info(`Email sent to ${to}: ${info && info.messageId}`);
+    console.log('[NOTIFY] ✅ Email sent successfully, Message ID:', info.messageId);
     return info;
   } catch (err) {
+    console.timeEnd('[NOTIFY] Email Send Duration');
     logger.error('Error sending email', err);
+    console.error('[NOTIFY] ❌ Email error:', err.message);
     throw err;
   }
 }

@@ -737,6 +737,13 @@
                     return;
                 }
 
+                if (newPassword === currentPassword) {
+                    e.preventDefault();
+                    showPasswordError('New password must be different from your current password');
+                    newPasswordEl.focus();
+                    return;
+                }
+
                 if (otpSection.classList.contains('show')) {
                     if (!passwordOTP) {
                         e.preventDefault();
