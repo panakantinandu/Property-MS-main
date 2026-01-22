@@ -30,7 +30,8 @@ Traditional property management relies on spreadsheets, manual follow-ups, and f
 - Tenant lease applications with expiry windows
 - Admin approval and reservation workflow
 - Automatic property release on cancellation or non-payment
-- Lease state transitions (Applied → Approved → Reserved → Active → Cancelled)
+- Lease state transitions:  
+  `Applied → Approved → Reserved → Active → Cancelled`
 
 ### 💳 Payments & Billing
 - Stripe Checkout integration (test mode)
@@ -77,13 +78,12 @@ Traditional property management relies on spreadsheets, manual follow-ups, and f
 Use the following credentials to explore the live demo:
 
 ### Admin
-Email: nan
-Password: nan427
+- **Email:** nan  
+- **Password:** nan427  
 
 ### Tenant
-Email: email@email.com
-Password: Email@098
-
+- **Email:** email@email.com  
+- **Password:** Email@098  
 
 > ⚠️ **Payments run in Stripe Test Mode** — no real money is charged.
 
@@ -137,6 +137,7 @@ This architecture mirrors real production billing systems and avoids data incons
 
 ## 📂 Project Structure
 
+```text
 Property-MS-main/
 ├── app.js
 ├── controllers/
@@ -145,131 +146,130 @@ Property-MS-main/
 ├── middleware/
 ├── views/
 ├── public/
-├── scripts/ # cron jobs & background tasks
+├── scripts/        # cron jobs & background tasks
 ├── README.md
 ├── LICENSE
 ├── CONTRIBUTING.md
 └── .env.example
-
-
----
-
+```
 ## 🚀 Local Setup
+Prerequisites
 
-### Prerequisites
 - Node.js (v16+)
 - MongoDB Atlas account
 - Stripe account
 - Resend.com account (free tier supported)
 
-### Installation
-
+## Installation
 ```bash
 git clone https://github.com/panakantinandu/Property-MS-main.git
 cd Property-MS-main
 npm install
 cp .env.example .env
 ```
-Environment Variables
-env
+
+
+## 🔑 Environment Variables
+```env
 MONGO_URI=
 JWT_SECRET=
 STRIPE_SECRET_KEY=
 STRIPE_WEBHOOK_SECRET=
 RESEND_API_KEY=
 EMAIL_FROM=LeaseHub <onboarding@resend.dev>
-Run Locally
+```
+
+## ▶️ Run Locally
+```bash
 npm start
+```
 Server starts at:
+```arduino
 http://localhost:3000
-👤 User Roles
-Admin
-Add and manage properties
+```
+## 👤 User Roles
 
-Review and approve lease applications
+### Admin
+- Add and manage properties
+- Review and approve lease applications
+- Track rent, dues, and payments
+- View reports and audit logs
 
-Track rent, dues, and payments
+### Tenant
+- Browse available properties
+- Apply for leases
+- Pay booking deposits and monthly rent
+- View invoices and payment history
+- Reset password securely via email
 
-View reports and audit logs
+---
 
-Tenant
-Browse available properties
+## 🔒 Security Considerations
 
-Apply for leases
+- No secrets are committed to the repository
+- All credentials managed via environment variables
+- Stripe handles all card data (PCI compliant)
+- Resend avoids SMTP port issues on cloud hosting
+- Audit logs ensure accountability and traceability
 
-Pay booking deposits and monthly rent
+---
 
-View invoices and payment history
+## 🧾 Commercial Usage & Licensing
 
-Reset password securely via email
+This project is **source-available** for learning and evaluation.
 
-🔒 Security Considerations
-No secrets are committed to the repository
+### ❌ Not Allowed Without Permission
+- Commercial use
+- Reselling or redistributing the code
+- Deploying for clients or organizations
 
-All credentials managed via environment variables
+### ✅ Allowed
+- Personal learning
+- Portfolio demonstration
+- Code review and study
 
-Stripe handles all card data (PCI compliant)
+📧 **For commercial licensing:**  
+panakantinandu@gmail.com  
 
-Resend avoids SMTP port issues on cloud hosting
+See `LICENSE` for full terms.
 
-Audit logs ensure accountability and traceability
+---
 
-🧾 Commercial Usage & Licensing
-This project is source-available for learning and evaluation.
+## 🤝 Contributing
 
-❌ Not Allowed Without Permission
-Commercial use
-
-Reselling or redistributing the code
-
-Deploying for clients or organizations
-
-✅ Allowed
-Personal learning
-
-Portfolio demonstration
-
-Code review and study
-
-📧 For commercial licensing:
-panakantinandu@gmail.com
-
-See LICENSE for full terms.
-
-🤝 Contributing
 Contributions are welcome for:
+- Bug reports
+- Feature suggestions
+- Documentation improvements
 
-Bug reports
+Please read `CONTRIBUTING.md` before submitting changes.
 
-Feature suggestions
+---
 
-Documentation improvements
+## 🎯 Why This Project Matters (For Recruiters)
 
-Please read CONTRIBUTING.md before submitting changes.
-
-🎯 Why This Project Matters (For Recruiters)
 LeaseHub demonstrates:
+- Real SaaS product thinking
+- Secure payment handling with Stripe
+- Background job automation
+- Clean separation of concerns
+- Cloud deployment experience
+- Business-driven system design
 
-Real SaaS product thinking
+This is **not a tutorial project** — it is a realistic simulation of a production system.
 
-Secure payment handling with Stripe
+---
 
-Background job automation
+## 📫 Contact
 
-Clean separation of concerns
+📧 **Email:** panakantinandu@gmail.com  
+🔗 **LinkedIn:** https://linkedin.com/in/nandu-panakanti-41839731a  
+🌐 **Portfolio:** https://nandu-portfolio-three.vercel.app  
+💻 **GitHub:** https://github.com/panakantinandu  
 
-Cloud deployment experience
+---
 
-Business-driven system design
+## 🏁 Final Note
 
-This is not a tutorial project — it is a realistic simulation of a production system.
-
-📫 Contact
-📧 Email: panakantinandu@gmail.com
-🔗 LinkedIn: https://linkedin.com/in/nandu-panakanti-41839731a
-🔗 Portfolio: https://nandu-portfolio-three.vercel.app
-🔗 GitHub: https://github.com/panakantinandu
-
-🏁 Final Note
-LeaseHub is intentionally designed to reflect real-world constraints, workflows, and edge cases.
-It serves as both a learning resource and proof of production-level engineering capability.
+LeaseHub is intentionally designed to reflect real-world constraints, workflows, and edge cases.  
+It serves as both a learning resource and proof of **production-level engineering capability**.
