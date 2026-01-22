@@ -1,61 +1,74 @@
 # 🚀 LeaseHub — Production-Ready Property Management SaaS
 
-**LeaseHub** is a **production-oriented, full-stack SaaS platform** that automates the complete landlord–tenant lifecycle, including property listings, lease applications, booking deposits, recurring rent payments, late fees, cancellations, audit logs, and admin reporting.
+**LeaseHub** is a **production-oriented, full-stack SaaS platform** that automates the complete landlord–tenant lifecycle — from property discovery and lease applications to secure payments, invoicing, cancellations, audit logs, and admin reporting.
 
-This project is built to demonstrate **real-world software engineering and system design**, not just CRUD operations.
+This project is intentionally designed to reflect **real-world business logic, financial workflows, and scalability considerations**, not just CRUD functionality.
 
-🔗 **Live Demo:** https://leasehub-admin.onrender.com/
-🔗 **Live Demo:** https://leasehub-tenant.onrender.com 
+🔗 **Admin Portal (Live):** https://leasehub-admin.onrender.com  
+🔗 **Tenant Portal (Live):** https://leasehub-tenant.onrender.com  
 🔗 **GitHub Repository:** https://github.com/panakantinandu/Property-MS-main  
 
 ---
 
 ## 🧠 Why LeaseHub?
 
-Traditional property management relies on spreadsheets, manual reminders, and inconsistent tracking, which leads to:
+Traditional property management relies on spreadsheets, manual follow-ups, and fragmented tools, which leads to:
 
 - Missed or delayed rent payments  
-- Manual follow-ups by landlords  
-- No audit trail for disputes  
+- Manual reminders and follow-ups by landlords  
+- No reliable audit trail for disputes  
 - Poor transparency for tenants  
 
-**LeaseHub solves these problems** by enforcing structured workflows, automated billing, secure payments, and system-driven enforcement rules.
+**LeaseHub solves these problems** by enforcing system-driven workflows, automated billing, secure payments, and time-based rules — similar to modern SaaS platforms.
 
 ---
 
-## ✨ Key Capabilities
+## ✨ Core Capabilities
 
 ### 🏠 Lease & Property Management
-- Property listings with availability status
-- Tenant lease applications
-- Approval and reservation workflow
-- Automatic property release on expiry or cancellation
+- Property listings with real-time availability status
+- Tenant lease applications with expiry windows
+- Admin approval and reservation workflow
+- Automatic property release on cancellation or non-payment
+- Lease state transitions (Applied → Approved → Reserved → Active → Cancelled)
 
 ### 💳 Payments & Billing
 - Stripe Checkout integration (test mode)
-- Booking deposit handling
-- Automated monthly rent invoices
-- Late fee enforcement
-- Webhook-verified payment updates
-- Ledger-based accounting model
+- Booking deposit enforcement after approval
+- Automated monthly rent invoice generation
+- Late fee calculation after grace period
+- Webhook-verified payment confirmation
+- Ledger-based accounting model (Invoices ≠ Payments)
 
-### ⏱️ Automation
-- Cron-based invoice generation
-- Rent reminders before due dates
-- Auto-cancellation on non-payment
-- Time-based application expiry
+### ⏱️ Automation & Enforcement
+- Cron-based monthly invoice creation
+- Rent reminders before due date
+- Auto-cancellation of applications on payment timeout
+- Late fee accrual for overdue rent
+- Time-based application expiry handling
 
-### 🔐 Security & Integrity
+### 🔐 Security & Reliability
 - JWT-based authentication
 - Role-based access control (Admin / Tenant)
 - Password hashing using bcrypt
 - Secure environment variable handling
 - Audit logs for sensitive actions
+- Stripe-hosted checkout (PCI compliant)
+
+### 📧 Email & Notifications
+- Password reset via **Resend.com** (SMTP-free, production-safe)
+- OTP-based password recovery
+- Automated system notifications for:
+  - Application approval
+  - Payment reminders
+  - Cancellation warnings
+  - Lease status changes
 
 ### 📊 Admin Insights
-- Property, tenant, and application reports
+- Tenant, property, and application dashboards
 - Outstanding dues and overdue tenants
-- Financial summaries (paid vs due)
+- Financial summaries (Paid vs Due)
+- Operational visibility for decision-making
 
 ---
 
@@ -63,17 +76,21 @@ Traditional property management relies on spreadsheets, manual reminders, and in
 
 Use the following credentials to explore the live demo:
 
-Admin Login
+### Admin
 Email: nan
 Password: nan427
 
-Tenant Login
+shell
+Copy code
+
+### Tenant
 Email: email@email.com
 Password: Email@098
 
+yaml
+Copy code
 
-
-> ⚠️ Payments use **Stripe Test Mode** — no real money is charged.
+> ⚠️ **Payments run in Stripe Test Mode** — no real money is charged.
 
 ---
 
@@ -95,28 +112,31 @@ Password: Email@098
 - Stripe Checkout
 - Stripe Webhooks
 
+### Email & Notifications
+- Resend.com (HTTP-based email delivery)
+
 ### Security
 - JWT Authentication
 - Role-Based Access Control (RBAC)
-- bcrypt
+- bcrypt password hashing
 
 ### Deployment
-- Render
+- Render (Admin & Tenant as separate services)
 - MongoDB Atlas
 
 ---
 
 ## 🧱 System Design Highlights
 
-LeaseHub is designed around **real accounting and workflow principles**:
+LeaseHub follows **real financial and SaaS design principles**:
 
-- **Invoices** represent what a tenant owes  
-- **Payments** represent what a tenant has paid  
-- **Ledger entries** maintain financial traceability  
+- **Invoices** represent amounts owed  
+- **Payments** represent completed transactions  
+- **Ledger entries** ensure accounting traceability  
 - **Stripe webhooks** guarantee payment integrity  
-- **Cron jobs** enforce time-based business rules  
+- **Background jobs** enforce time-based rules  
 
-This separation ensures consistency and mirrors real production financial systems.
+This architecture mirrors real production billing systems and avoids data inconsistency.
 
 ---
 
@@ -136,6 +156,8 @@ Property-MS-main/
 ├── CONTRIBUTING.md
 └── .env.example
 
+yaml
+Copy code
 
 ---
 
@@ -145,6 +167,7 @@ Property-MS-main/
 - Node.js (v16+)
 - MongoDB Atlas account
 - Stripe account
+- Resend.com account (free tier supported)
 
 ### Installation
 
@@ -153,30 +176,29 @@ git clone https://github.com/panakantinandu/Property-MS-main.git
 cd Property-MS-main
 npm install
 cp .env.example .env
-Update .env with your own values:
-
-makefile
+Environment Variables
+env
+Copy code
 MONGO_URI=
 JWT_SECRET=
 STRIPE_SECRET_KEY=
 STRIPE_WEBHOOK_SECRET=
-EMAIL_HOST=
-EMAIL_PORT=
-EMAIL_USER=
-EMAIL_PASS=
-Run the application:
-
+RESEND_API_KEY=
+EMAIL_FROM=LeaseHub <onboarding@resend.dev>
+Run Locally
 bash
+Copy code
 npm start
-The server will start at:
+Server starts at:
 
 arduino
+Copy code
 http://localhost:3000
 👤 User Roles
 Admin
 Add and manage properties
 
-Review and approve applications
+Review and approve lease applications
 
 Track rent, dues, and payments
 
@@ -185,30 +207,34 @@ View reports and audit logs
 Tenant
 Browse available properties
 
-Apply for a lease
+Apply for leases
 
-Pay booking deposit and monthly rent
+Pay booking deposits and monthly rent
 
 View invoices and payment history
+
+Reset password securely via email
 
 🔒 Security Considerations
 No secrets are committed to the repository
 
-All sensitive data is managed using environment variables
+All credentials managed via environment variables
 
 Stripe handles all card data (PCI compliant)
+
+Resend avoids SMTP port issues on cloud hosting
 
 Audit logs ensure accountability and traceability
 
 🧾 Commercial Usage & Licensing
-This project is source-available for learning and evaluation purposes.
+This project is source-available for learning and evaluation.
 
 ❌ Not Allowed Without Permission
 Commercial use
 
 Reselling or redistributing the code
 
-Deploying the system for clients or organizations
+Deploying for clients or organizations
 
 ✅ Allowed
 Personal learning
@@ -217,18 +243,10 @@ Portfolio demonstration
 
 Code review and study
 
-If you want to:
-
-Use LeaseHub commercially
-
-Deploy it for clients
-
-Build a SaaS product on top of it
-
-📧 Contact for a commercial license:
+📧 For commercial licensing:
 panakantinandu@gmail.com
 
-See the LICENSE file for full terms.
+See LICENSE for full terms.
 
 🤝 Contributing
 Contributions are welcome for:
@@ -248,11 +266,11 @@ Real SaaS product thinking
 
 Secure payment handling with Stripe
 
-Automation using background jobs
+Background job automation
 
 Clean separation of concerns
 
-Production deployment experience
+Cloud deployment experience
 
 Business-driven system design
 
@@ -266,4 +284,4 @@ This is not a tutorial project — it is a realistic simulation of a production 
 
 🏁 Final Note
 LeaseHub is intentionally designed to reflect real-world constraints, workflows, and edge cases.
-It serves both as a learning resource and as proof of production-level engineering capability.
+It serves as both a learning resource and proof of production-level engineering capability.
